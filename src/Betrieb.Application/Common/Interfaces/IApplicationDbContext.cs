@@ -8,7 +8,7 @@ public interface IApplicationDbContext
     DbSet<User> Users { get; }
     DbSet<Order> Orders { get; }
     DbSet<TimeEntry> TimeEntries { get; }
-    DbSet<VacationRequest> VacationRequests { get; }
+    DbSet<AbsenceRequest> AbsenceRequests { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }

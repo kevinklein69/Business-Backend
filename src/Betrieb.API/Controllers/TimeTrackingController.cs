@@ -1,4 +1,5 @@
 using Betrieb.Application.Features.TimeTracking.GetBalance;
+using Betrieb.Application.Features.TimeTracking.GetClockStatus;
 using Betrieb.Application.Features.TimeTracking.GetEntries;
 using Betrieb.Application.Features.TimeTracking.ToggleClock;
 using MediatR;
@@ -16,6 +17,13 @@ public class TimeTrackingController(ISender sender) : ControllerBase
     public async Task<ActionResult<ToggleClockResult>> ToggleClock(CancellationToken cancellationToken)
     {
         var result = await sender.Send(new ToggleClockCommand(), cancellationToken);
+        return Ok(result);
+    }
+
+    [HttpGet("status")]
+    public async Task<ActionResult<ClockStatusDto>> GetClockStatus(CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetClockStatusQuery(), cancellationToken);
         return Ok(result);
     }
 

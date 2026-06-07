@@ -32,7 +32,8 @@ public static class DbSeeder
 
         context.Orders.AddRange(CreateOrders(byName));
         context.TimeEntries.AddRange(CreateTimeEntries(byName["Max Müller"]));
-        context.VacationRequests.AddRange(CreateVacationRequests(byName["Max Müller"]));
+        context.AbsenceRequests.AddRange(CreateAbsenceRequests(byName["Max Müller"]));
+        context.AbsenceRequests.AddRange(CreateSickAbsenceRequests(byName["Tom Wagner"], byName["Lisa Bauer"]));
 
         await context.SaveChangesAsync();
     }
@@ -117,22 +118,44 @@ public static class DbSeeder
         }).ToList();
     }
 
-    private static List<VacationRequest> CreateVacationRequests(User user)
+    private static List<AbsenceRequest> CreateAbsenceRequests(User user)
     {
-        (DateOnly Start, DateOnly End, VacationStatus Status, string? Comment)[] specs =
+        (AbsenceType Type, DateOnly Start, DateOnly End, AbsenceStatus Status, string? Comment)[] specs =
         [
-            (new DateOnly(2026, 7, 15), new DateOnly(2026, 7, 19), VacationStatus.Approved, "Summer vacation"),
-            (new DateOnly(2026, 9, 1), new DateOnly(2026, 9, 5), VacationStatus.Open, null),
-            (new DateOnly(2026, 12, 27), new DateOnly(2026, 12, 31), VacationStatus.Rejected, "Company holidays"),
+            (AbsenceType.Vacation, new DateOnly(2026, 7, 15), new DateOnly(2026, 7, 19), AbsenceStatus.Approved, "Summer vacation"),
+            (AbsenceType.Vacation, new DateOnly(2026, 9, 1), new DateOnly(2026, 9, 5), AbsenceStatus.Open, null),
+            (AbsenceType.Vacation, new DateOnly(2026, 12, 27), new DateOnly(2026, 12, 31), AbsenceStatus.Rejected, "Company holidays"),
         ];
 
-        return specs.Select(s => new VacationRequest
+        return specs.Select(s => new AbsenceRequest
         {
             Id = Guid.NewGuid(),
             UserId = user.Id,
+            Type = s.Type,
             StartDate = s.Start,
             EndDate = s.End,
             Status = s.Status,
+            Comment = s.Comment,
+        }).ToList();
+    }
+
+    /// Sample sick-leave / child-sick records, as a manager would record them on behalf of employees.
+    private static List<AbsenceRequest> CreateSickAbsenceRequests(User tom, User lisa)
+    {
+        (User User, AbsenceType Type, DateOnly Start, DateOnly End, string? Comment)[] specs =
+        [
+            (tom, AbsenceType.Sick, new DateOnly(2026, 5, 25), new DateOnly(2026, 5, 27), "Grippaler Infekt"),
+            (lisa, AbsenceType.ChildSick, new DateOnly(2026, 6, 3), new DateOnly(2026, 6, 3), "Kind krank – Kinderkrankentage"),
+        ];
+
+        return specs.Select(s => new AbsenceRequest
+        {
+            Id = Guid.NewGuid(),
+            UserId = s.User.Id,
+            Type = s.Type,
+            StartDate = s.Start,
+            EndDate = s.End,
+            Status = AbsenceStatus.Approved,
             Comment = s.Comment,
         }).ToList();
     }

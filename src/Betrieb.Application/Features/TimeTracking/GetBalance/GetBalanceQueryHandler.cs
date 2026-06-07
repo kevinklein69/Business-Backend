@@ -1,4 +1,5 @@
 using Betrieb.Application.Common.Interfaces;
+using Betrieb.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,22 @@ public class GetBalanceQueryHandler(IApplicationDbContext context, ICurrentUserS
         var minutesByDay = entries
             .GroupBy(t => DateOnly.FromDateTime(t.ClockIn))
             .ToDictionary(g => g.Key, g => g.Sum(t => (int)(t.ClockOut!.Value - t.ClockIn).TotalMinutes));
+
+        // Approved absences (Urlaub, Krankheit, Kind krank, ...) count as a full workday (8h)
+        // each, on top of/instead of actual clock-ins, so they show up in the statistics too.
+        var approvedAbsenceDays = await context.AbsenceRequests
+            .Where(a => a.UserId == userId && a.Status == AbsenceStatus.Approved)
+            .ToListAsync(cancellationToken);
+
+        foreach (var absence in approvedAbsenceDays)
+        {
+            for (var date = absence.StartDate; date <= absence.EndDate; date = date.AddDays(1))
+            {
+                if (!TimeTrackingConstants.IsWorkday(date)) continue;
+                if (minutesByDay.ContainsKey(date)) continue;
+                minutesByDay[date] = TimeTrackingConstants.DailyTargetMinutes;
+            }
+        }
 
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var weekStart = today.AddDays(-(int)today.DayOfWeek + (int)DayOfWeek.Monday);

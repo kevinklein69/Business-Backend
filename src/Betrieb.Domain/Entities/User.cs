@@ -14,5 +14,5 @@ public class User
 
     public ICollection<Order> AssignedOrders { get; set; } = new List<Order>();
     public ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
-    public ICollection<VacationRequest> VacationRequests { get; set; } = new List<VacationRequest>();
+    public ICollection<AbsenceRequest> AbsenceRequests { get; set; } = new List<AbsenceRequest>();
 }

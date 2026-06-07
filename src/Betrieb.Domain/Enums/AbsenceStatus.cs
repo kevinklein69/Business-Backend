@@ -1,6 +1,6 @@
 namespace Betrieb.Domain.Enums;
 
-public enum VacationStatus
+public enum AbsenceStatus
 {
     Open,
     Approved,

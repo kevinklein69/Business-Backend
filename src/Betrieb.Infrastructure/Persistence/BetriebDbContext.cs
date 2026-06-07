@@ -11,7 +11,7 @@ public class BetriebDbContext(DbContextOptions<BetriebDbContext> options)
     public DbSet<User> Users => Set<User>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<TimeEntry> TimeEntries => Set<TimeEntry>();
-    public DbSet<VacationRequest> VacationRequests => Set<VacationRequest>();
+    public DbSet<AbsenceRequest> AbsenceRequests => Set<AbsenceRequest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

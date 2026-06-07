@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Betrieb.Application.Features.Vacation.CreateRequest;
+namespace Betrieb.Application.Features.Absence.CreateRequest;
 
 public class CreateRequestCommandValidator : AbstractValidator<CreateRequestCommand>
 {

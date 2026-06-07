@@ -1,16 +1,19 @@
 using Betrieb.Domain.Enums;
 
-namespace Betrieb.Application.Features.Vacation;
+namespace Betrieb.Application.Features.Absence;
 
-public record VacationRequestDto(
+public record AbsenceRequestDto(
     Guid Id,
+    Guid UserId,
+    string UserName,
+    AbsenceType Type,
     DateOnly StartDate,
     DateOnly EndDate,
     int BusinessDays,
-    VacationStatus Status,
+    AbsenceStatus Status,
     string? Comment);
 
-public static class VacationRequestExtensions
+public static class AbsenceRequestExtensions
 {
     /// Inclusive count of Mon-Fri days between start and end, mirroring the frontend's
     /// `differenceInBusinessDays(bis, von) + 1` calculation.
@@ -29,4 +32,16 @@ public static class VacationRequestExtensions
 
         return days;
     }
+
+    public static AbsenceRequestDto ToDto(this Domain.Entities.AbsenceRequest request) =>
+        new(
+            request.Id,
+            request.UserId,
+            $"{request.User.FirstName} {request.User.LastName}",
+            request.Type,
+            request.StartDate,
+            request.EndDate,
+            CountBusinessDays(request.StartDate, request.EndDate),
+            request.Status,
+            request.Comment);
 }
