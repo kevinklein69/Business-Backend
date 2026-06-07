@@ -1,6 +1,6 @@
-# Betrieb-App API — ASP.NET Core Backend
+# Business-App API — ASP.NET Core Backend
 
-Clean Architecture Backend für die Betrieb-App, gebaut mit ASP.NET Core 8 und Entity Framework Core.
+Clean Architecture Backend für die Business-App, gebaut mit ASP.NET Core 8 und Entity Framework Core.
 
 ## Voraussetzungen
 
@@ -23,10 +23,10 @@ Clean Architecture Backend für die Betrieb-App, gebaut mit ASP.NET Core 8 und E
 
 2. API starten:
    ```bash
-   dotnet run --project src/Betrieb.API
+   dotnet run --project src/Business.API
    ```
 
-   Die API lauscht dann auf **`http://localhost:5228`** (siehe `src/Betrieb.API/Properties/launchSettings.json` — der `DefaultConnection`-Eintrag in `appsettings.json` nennt zwar Port 5000, das ist aber nur die Datenbankverbindung, nicht der API-Port).
+   Die API lauscht dann auf **`http://localhost:5228`** (siehe `src/Business.API/Properties/launchSettings.json` — der `DefaultConnection`-Eintrag in `appsettings.json` nennt zwar Port 5000, das ist aber nur die Datenbankverbindung, nicht der API-Port).
 
    Beim ersten Start wird die Datenbank automatisch migriert und mit Demo-Daten befüllt (`DbSeeder.cs`). Alle Demo-Konten verwenden das Passwort `Demo123!`, z. B.:
 
@@ -41,15 +41,15 @@ Die API-Dokumentation ist unter [http://localhost:5228/swagger](http://localhost
 ## Projektstruktur
 
 ```
-betrieb-api/
+business-api/
 ├── src/
-│   ├── Betrieb.API/           # ASP.NET Core Web API (Controller, Program.cs)
-│   ├── Betrieb.Application/   # Business Logic, MediatR Handlers, FluentValidation
-│   ├── Betrieb.Domain/        # Entities, Domain Interfaces
-│   └── Betrieb.Infrastructure/ # EF Core DbContext, Repositories, PostgreSQL
+│   ├── Business.API/           # ASP.NET Core Web API (Controller, Program.cs)
+│   ├── Business.Application/   # Business Logic, MediatR Handlers, FluentValidation
+│   ├── Business.Domain/        # Entities, Domain Interfaces
+│   └── Business.Infrastructure/ # EF Core DbContext, Repositories, PostgreSQL
 └── tests/
-    ├── Betrieb.UnitTests/
-    └── Betrieb.IntegrationTests/
+    ├── Business.UnitTests/
+    └── Business.IntegrationTests/
 ```
 
 ## Architektur
