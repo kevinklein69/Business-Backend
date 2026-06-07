@@ -13,6 +13,9 @@ public static class DbSeeder
 {
     public const string DemoPassword = "Demo123!";
 
+    private static DateTime Utc(int year, int month, int day) =>
+        new(year, month, day, 0, 0, 0, DateTimeKind.Utc);
+
     public static async Task SeedAsync(BetriebDbContext context, IPasswordHasher passwordHasher, ILogger logger)
     {
         if (await context.Users.AnyAsync())
@@ -69,17 +72,17 @@ public static class DbSeeder
         (string Title, string? Description, string? Customer, OrderStatus Status, DateTime CreatedAt, string[] Assignees)[] specs =
         [
             ("Inspect heating system", null, "The Berger Family",
-                OrderStatus.Backlog, new DateTime(2026, 6, 1), []),
+                OrderStatus.Backlog, Utc(2026, 6, 1), []),
             ("Roof inspection", "Annual inspection", "Property Management Ltd.",
-                OrderStatus.InProgress, new DateTime(2026, 6, 2), ["Max Müller", "Anna Schmidt"]),
+                OrderStatus.InProgress, Utc(2026, 6, 2), ["Max Müller", "Anna Schmidt"]),
             ("Electrical installation - ground floor", null, null,
-                OrderStatus.InProgress, new DateTime(2026, 5, 28), ["Tom Wagner"]),
+                OrderStatus.InProgress, Utc(2026, 5, 28), ["Tom Wagner"]),
             ("Plumbing - upper floor", null, "Mr. Meier",
-                OrderStatus.ReadyForAcceptance, new DateTime(2026, 5, 20), ["Max Müller"]),
+                OrderStatus.ReadyForAcceptance, Utc(2026, 5, 20), ["Max Müller"]),
             ("Window replacement - 2nd floor", "All 4 windows", "Ms. Koch",
-                OrderStatus.Invoicing, new DateTime(2026, 5, 15), ["Tom Wagner", "Jonas Fischer"]),
+                OrderStatus.Invoicing, Utc(2026, 5, 15), ["Tom Wagner", "Jonas Fischer"]),
             ("Painting work - ground floor", null, null,
-                OrderStatus.Done, new DateTime(2026, 5, 10), ["Lisa Bauer"]),
+                OrderStatus.Done, Utc(2026, 5, 10), ["Lisa Bauer"]),
         ];
 
         return specs.Select(s => new Order
@@ -98,11 +101,11 @@ public static class DbSeeder
     {
         (DateTime Date, TimeSpan Start, TimeSpan End)[] specs =
         [
-            (new DateTime(2026, 6, 2), new TimeSpan(7, 45, 0), new TimeSpan(16, 30, 0)),
-            (new DateTime(2026, 6, 1), new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0)),
-            (new DateTime(2026, 5, 31), new TimeSpan(7, 30, 0), new TimeSpan(15, 0, 0)),
-            (new DateTime(2026, 5, 30), new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0)),
-            (new DateTime(2026, 5, 29), new TimeSpan(7, 50, 0), new TimeSpan(16, 15, 0)),
+            (Utc(2026, 6, 2), new TimeSpan(7, 45, 0), new TimeSpan(16, 30, 0)),
+            (Utc(2026, 6, 1), new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0)),
+            (Utc(2026, 5, 31), new TimeSpan(7, 30, 0), new TimeSpan(15, 0, 0)),
+            (Utc(2026, 5, 30), new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0)),
+            (Utc(2026, 5, 29), new TimeSpan(7, 50, 0), new TimeSpan(16, 15, 0)),
         ];
 
         return specs.Select(s => new TimeEntry
