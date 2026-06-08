@@ -35,6 +35,8 @@ public static class DbSeeder
         context.AbsenceRequests.AddRange(CreateAbsenceRequests(byName["Max Müller"]));
         context.AbsenceRequests.AddRange(CreateSickAbsenceRequests(byName["Tom Wagner"], byName["Lisa Bauer"]));
 
+        context.CompanySettings.Add(new CompanySettings { Id = Guid.NewGuid(), State = GermanState.Bayern });
+
         await context.SaveChangesAsync();
     }
 

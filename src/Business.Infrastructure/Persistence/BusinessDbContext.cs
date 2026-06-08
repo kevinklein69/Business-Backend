@@ -12,6 +12,7 @@ public class BusinessDbContext(DbContextOptions<BusinessDbContext> options)
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<TimeEntry> TimeEntries => Set<TimeEntry>();
     public DbSet<AbsenceRequest> AbsenceRequests => Set<AbsenceRequest>();
+    public DbSet<CompanySettings> CompanySettings => Set<CompanySettings>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

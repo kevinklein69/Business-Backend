@@ -19,6 +19,6 @@ public class UpdateRequestStatusCommandHandler(IApplicationDbContext context)
         absenceRequest.Status = request.Status;
         await context.SaveChangesAsync(cancellationToken);
 
-        return absenceRequest.ToDto();
+        return absenceRequest.ToDto(await context.GetCompanyStateAsync(cancellationToken));
     }
 }

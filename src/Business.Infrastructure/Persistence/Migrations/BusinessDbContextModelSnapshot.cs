@@ -58,6 +58,22 @@ namespace Business.Infrastructure.Persistence.Migrations
                     b.ToTable("AbsenceRequests");
                 });
 
+            modelBuilder.Entity("Business.Domain.Entities.CompanySettings", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanySettings");
+                });
+
             modelBuilder.Entity("Business.Domain.Entities.Order", b =>
                 {
                     b.Property<Guid>("Id")

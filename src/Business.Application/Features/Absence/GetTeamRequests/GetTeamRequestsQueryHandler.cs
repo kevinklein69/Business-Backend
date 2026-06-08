@@ -14,6 +14,7 @@ public class GetTeamRequestsQueryHandler(IApplicationDbContext context)
             .OrderByDescending(a => a.StartDate)
             .ToListAsync(cancellationToken);
 
-        return requests.Select(a => a.ToDto()).ToList();
+        var state = await context.GetCompanyStateAsync(cancellationToken);
+        return requests.Select(a => a.ToDto(state)).ToList();
     }
 }

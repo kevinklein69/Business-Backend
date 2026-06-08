@@ -32,6 +32,6 @@ public class CreateRequestCommandHandler(IApplicationDbContext context, ICurrent
             .Include(a => a.User)
             .FirstAsync(a => a.Id == absenceRequest.Id, cancellationToken);
 
-        return saved.ToDto();
+        return saved.ToDto(await context.GetCompanyStateAsync(cancellationToken));
     }
 }

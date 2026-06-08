@@ -30,6 +30,6 @@ public class RecordAbsenceCommandHandler(IApplicationDbContext context)
         await context.SaveChangesAsync(cancellationToken);
 
         absenceRequest.User = user;
-        return absenceRequest.ToDto();
+        return absenceRequest.ToDto(await context.GetCompanyStateAsync(cancellationToken));
     }
 }
