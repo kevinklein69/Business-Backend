@@ -27,6 +27,13 @@ public class UpdateOrderStatusCommandHandler(IApplicationDbContext context)
             order.Customer,
             order.Status,
             order.CreatedAt,
+            order.Revenue,
+            order.InvoiceDate,
+            order.EstimatedHours,
+            order.PlannedStartDate,
+            order.PlannedEndDate,
+            order.ActualHours,
+            order.DeviationReason,
             order.Assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList());
     }
 }

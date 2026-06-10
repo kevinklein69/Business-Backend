@@ -11,4 +11,11 @@ public record OrderDto(
     string? Customer,
     OrderStatus Status,
     DateTime CreatedAt,
+    decimal? Revenue,
+    DateOnly? InvoiceDate,
+    decimal? EstimatedHours,
+    DateOnly? PlannedStartDate,
+    DateOnly? PlannedEndDate,
+    decimal? ActualHours,
+    string? DeviationReason,
     List<AssigneeDto> Assignees);

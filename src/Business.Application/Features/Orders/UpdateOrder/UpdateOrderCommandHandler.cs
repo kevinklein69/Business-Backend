@@ -23,6 +23,13 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
         order.Title = request.Title;
         order.Description = request.Description;
         order.Customer = request.Customer;
+        order.Revenue = request.Revenue;
+        order.InvoiceDate = request.InvoiceDate;
+        order.EstimatedHours = request.EstimatedHours;
+        order.PlannedStartDate = request.PlannedStartDate;
+        order.PlannedEndDate = request.PlannedEndDate;
+        order.ActualHours = request.ActualHours;
+        order.DeviationReason = request.DeviationReason;
         order.Assignees = assignees;
 
         await context.SaveChangesAsync(cancellationToken);
@@ -34,6 +41,13 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
             order.Customer,
             order.Status,
             order.CreatedAt,
+            order.Revenue,
+            order.InvoiceDate,
+            order.EstimatedHours,
+            order.PlannedStartDate,
+            order.PlannedEndDate,
+            order.ActualHours,
+            order.DeviationReason,
             assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList());
     }
 }

@@ -11,5 +11,13 @@ public class Order
     public OrderStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
 
+    public decimal? Revenue { get; set; }
+    public DateOnly? InvoiceDate { get; set; }
+    public decimal? EstimatedHours { get; set; }
+    public DateOnly? PlannedStartDate { get; set; }
+    public DateOnly? PlannedEndDate { get; set; }
+    public decimal? ActualHours { get; set; }
+    public string? DeviationReason { get; set; }
+
     public ICollection<User> Assignees { get; set; } = new List<User>();
 }

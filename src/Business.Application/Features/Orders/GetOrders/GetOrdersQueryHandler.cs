@@ -18,6 +18,13 @@ public class GetOrdersQueryHandler(IApplicationDbContext context)
                 o.Customer,
                 o.Status,
                 o.CreatedAt,
+                o.Revenue,
+                o.InvoiceDate,
+                o.EstimatedHours,
+                o.PlannedStartDate,
+                o.PlannedEndDate,
+                o.ActualHours,
+                o.DeviationReason,
                 o.Assignees
                     .Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName))
                     .ToList()))

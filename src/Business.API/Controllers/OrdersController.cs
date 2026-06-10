@@ -16,7 +16,18 @@ namespace Business.API.Controllers;
 [Route("api/orders")]
 public class OrdersController(ISender sender) : ControllerBase
 {
-    public record UpsertOrderRequest(string Title, string? Description, string? Customer, List<Guid> AssigneeIds);
+    public record UpsertOrderRequest(
+        string Title,
+        string? Description,
+        string? Customer,
+        List<Guid> AssigneeIds,
+        decimal? Revenue,
+        DateOnly? InvoiceDate,
+        decimal? EstimatedHours,
+        DateOnly? PlannedStartDate,
+        DateOnly? PlannedEndDate,
+        decimal? ActualHours,
+        string? DeviationReason);
 
     public record UpdateStatusRequest(OrderStatus Status);
 
@@ -31,7 +42,18 @@ public class OrdersController(ISender sender) : ControllerBase
     public async Task<ActionResult<OrderDto>> Create(UpsertOrderRequest request, CancellationToken cancellationToken)
     {
         var result = await sender.Send(
-            new CreateOrderCommand(request.Title, request.Description, request.Customer, request.AssigneeIds),
+            new CreateOrderCommand(
+                request.Title,
+                request.Description,
+                request.Customer,
+                request.AssigneeIds,
+                request.Revenue,
+                request.InvoiceDate,
+                request.EstimatedHours,
+                request.PlannedStartDate,
+                request.PlannedEndDate,
+                request.ActualHours,
+                request.DeviationReason),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetAll), new { id = result.Id }, result);
@@ -43,7 +65,19 @@ public class OrdersController(ISender sender) : ControllerBase
         try
         {
             var result = await sender.Send(
-                new UpdateOrderCommand(id, request.Title, request.Description, request.Customer, request.AssigneeIds),
+                new UpdateOrderCommand(
+                    id,
+                    request.Title,
+                    request.Description,
+                    request.Customer,
+                    request.AssigneeIds,
+                    request.Revenue,
+                    request.InvoiceDate,
+                    request.EstimatedHours,
+                    request.PlannedStartDate,
+                    request.PlannedEndDate,
+                    request.ActualHours,
+                    request.DeviationReason),
                 cancellationToken);
 
             return Ok(result);

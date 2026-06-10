@@ -6,4 +6,11 @@ public record CreateOrderCommand(
     string Title,
     string? Description,
     string? Customer,
-    List<Guid> AssigneeIds) : IRequest<OrderDto>;
+    List<Guid> AssigneeIds,
+    decimal? Revenue,
+    DateOnly? InvoiceDate,
+    decimal? EstimatedHours,
+    DateOnly? PlannedStartDate,
+    DateOnly? PlannedEndDate,
+    decimal? ActualHours,
+    string? DeviationReason) : IRequest<OrderDto>;

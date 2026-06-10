@@ -23,6 +23,13 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             Customer = request.Customer,
             Status = OrderStatus.Backlog,
             CreatedAt = DateTime.UtcNow,
+            Revenue = request.Revenue,
+            InvoiceDate = request.InvoiceDate,
+            EstimatedHours = request.EstimatedHours,
+            PlannedStartDate = request.PlannedStartDate,
+            PlannedEndDate = request.PlannedEndDate,
+            ActualHours = request.ActualHours,
+            DeviationReason = request.DeviationReason,
             Assignees = assignees
         };
 
@@ -36,6 +43,13 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             order.Customer,
             order.Status,
             order.CreatedAt,
+            order.Revenue,
+            order.InvoiceDate,
+            order.EstimatedHours,
+            order.PlannedStartDate,
+            order.PlannedEndDate,
+            order.ActualHours,
+            order.DeviationReason,
             assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList());
     }
 }

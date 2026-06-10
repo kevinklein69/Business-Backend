@@ -15,6 +15,11 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.Customer).HasMaxLength(200);
         builder.Property(o => o.Status).HasConversion<string>().HasMaxLength(30);
 
+        builder.Property(o => o.Revenue).HasPrecision(12, 2);
+        builder.Property(o => o.EstimatedHours).HasPrecision(7, 2);
+        builder.Property(o => o.ActualHours).HasPrecision(7, 2);
+        builder.Property(o => o.DeviationReason).HasMaxLength(500);
+
         builder.HasMany(o => o.Assignees)
             .WithMany(u => u.AssignedOrders)
             .UsingEntity(j => j.ToTable("OrderAssignments"));
