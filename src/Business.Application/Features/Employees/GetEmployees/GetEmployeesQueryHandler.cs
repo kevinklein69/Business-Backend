@@ -20,7 +20,16 @@ public class GetEmployeesQueryHandler(IApplicationDbContext context)
                 u.Email,
                 u.Role,
                 u.Department,
-                u.AssignedOrders.Any(o => o.Status != OrderStatus.Done)))
+                u.AssignedOrders.Any(o => o.Status != OrderStatus.Done),
+                u.Street,
+                u.HouseNumber,
+                u.Zip,
+                u.City,
+                u.Phone,
+                u.EntryDate,
+                u.ProbationMonths,
+                u.ProbationEndDate,
+                u.VacationDaysEntitlement))
             .ToListAsync(cancellationToken);
     }
 }

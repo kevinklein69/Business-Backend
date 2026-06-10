@@ -12,4 +12,13 @@ public record EmployeeDto(
     string Email,
     Role Role,
     string? Department,
-    bool HasActiveOrder);
+    bool HasActiveOrder,
+    string? Street,
+    string? HouseNumber,
+    string? Zip,
+    string? City,
+    string? Phone,
+    DateOnly? EntryDate,
+    int? ProbationMonths,
+    DateOnly? ProbationEndDate,
+    int? VacationDaysEntitlement);

@@ -17,6 +17,12 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.Department).HasMaxLength(100);
         builder.Property(u => u.Role).HasConversion<string>().HasMaxLength(20);
 
+        builder.Property(u => u.Street).HasMaxLength(200);
+        builder.Property(u => u.HouseNumber).HasMaxLength(20);
+        builder.Property(u => u.Zip).HasMaxLength(10);
+        builder.Property(u => u.City).HasMaxLength(100);
+        builder.Property(u => u.Phone).HasMaxLength(50);
+
         builder.HasIndex(u => u.Email).IsUnique();
 
         builder.HasMany(u => u.TimeEntries)

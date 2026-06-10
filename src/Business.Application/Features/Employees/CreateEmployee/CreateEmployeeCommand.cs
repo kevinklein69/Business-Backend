@@ -10,4 +10,13 @@ public record CreateEmployeeCommand(
     string Email,
     string Password,
     Role Role,
-    string? Department) : IRequest<EmployeeDto>;
+    string? Department,
+    string Street,
+    string HouseNumber,
+    string Zip,
+    string City,
+    string? Phone,
+    DateOnly EntryDate,
+    int? ProbationMonths,
+    DateOnly? ProbationEndDate,
+    int? VacationDaysEntitlement) : IRequest<EmployeeDto>;

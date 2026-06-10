@@ -11,4 +11,13 @@ public record UpdateEmployeeCommand(
     string Email,
     Role Role,
     string? Department,
-    string? Password) : IRequest<EmployeeDto>;
+    string? Password,
+    string Street,
+    string HouseNumber,
+    string Zip,
+    string City,
+    string? Phone,
+    DateOnly EntryDate,
+    int? ProbationMonths,
+    DateOnly? ProbationEndDate,
+    int? VacationDaysEntitlement) : IRequest<EmployeeDto>;

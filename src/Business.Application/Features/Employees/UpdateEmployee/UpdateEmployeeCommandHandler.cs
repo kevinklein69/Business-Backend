@@ -1,3 +1,4 @@
+using Business.Application.Common;
 using Business.Application.Common.Exceptions;
 using Business.Application.Common.Interfaces;
 using Business.Application.Features.Employees.GetEmployees;
@@ -23,6 +24,15 @@ public class UpdateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
         user.Email = request.Email;
         user.Role = request.Role;
         user.Department = request.Department;
+        user.Street = request.Street;
+        user.HouseNumber = request.HouseNumber;
+        user.Zip = request.Zip;
+        user.City = request.City;
+        user.Phone = request.Phone;
+        user.EntryDate = request.EntryDate;
+        user.ProbationMonths = request.ProbationMonths;
+        user.ProbationEndDate = request.ProbationEndDate ?? ProbationCalculator.CalculateEnd(request.EntryDate, request.ProbationMonths);
+        user.VacationDaysEntitlement = request.VacationDaysEntitlement;
 
         if (!string.IsNullOrWhiteSpace(request.Password))
         {
@@ -38,6 +48,15 @@ public class UpdateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
             user.Email,
             user.Role,
             user.Department,
-            user.AssignedOrders.Any(o => o.Status != OrderStatus.Done));
+            user.AssignedOrders.Any(o => o.Status != OrderStatus.Done),
+            user.Street,
+            user.HouseNumber,
+            user.Zip,
+            user.City,
+            user.Phone,
+            user.EntryDate,
+            user.ProbationMonths,
+            user.ProbationEndDate,
+            user.VacationDaysEntitlement);
     }
 }
