@@ -4,5 +4,6 @@ public enum AbsenceType
 {
     Vacation,
     Sick,
-    ChildSick
+    ChildSick,
+    FlexTimeCompensation,
 }

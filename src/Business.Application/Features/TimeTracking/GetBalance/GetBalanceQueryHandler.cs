@@ -34,7 +34,13 @@ public class GetBalanceQueryHandler(IApplicationDbContext context, ICurrentUserS
             {
                 if (!TimeTrackingConstants.IsWorkday(date)) continue;
                 if (minutesByDay.ContainsKey(date)) continue;
-                minutesByDay[date] = TimeTrackingConstants.DailyTargetMinutes;
+
+                // FlexTimeCompensation days consume overtime: record 0 worked minutes so the
+                // daily target is subtracted from the balance. All other absence types (Vacation,
+                // Sick, ChildSick) are neutral — they fill the target to keep the balance at zero.
+                minutesByDay[date] = absence.Type == AbsenceType.FlexTimeCompensation
+                    ? 0
+                    : TimeTrackingConstants.DailyTargetMinutes;
             }
         }
 

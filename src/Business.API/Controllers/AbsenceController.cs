@@ -17,7 +17,7 @@ namespace Business.API.Controllers;
 [Route("api/absence-requests")]
 public class AbsenceController(ISender sender) : ControllerBase
 {
-    public record CreateRequestBody(DateOnly StartDate, DateOnly EndDate, string? Comment);
+    public record CreateRequestBody(AbsenceType Type, DateOnly StartDate, DateOnly EndDate, string? Comment);
 
     public record UpdateStatusRequest(AbsenceStatus Status);
 
@@ -34,7 +34,7 @@ public class AbsenceController(ISender sender) : ControllerBase
     public async Task<ActionResult<AbsenceRequestDto>> Create(CreateRequestBody request, CancellationToken cancellationToken)
     {
         var result = await sender.Send(
-            new CreateRequestCommand(request.StartDate, request.EndDate, request.Comment),
+            new CreateRequestCommand(request.Type, request.StartDate, request.EndDate, request.Comment),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetMine), new { id = result.Id }, result);

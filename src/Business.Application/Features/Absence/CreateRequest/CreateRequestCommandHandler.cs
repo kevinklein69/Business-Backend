@@ -18,7 +18,7 @@ public class CreateRequestCommandHandler(IApplicationDbContext context, ICurrent
         {
             Id = Guid.NewGuid(),
             UserId = userId,
-            Type = AbsenceType.Vacation,
+            Type = request.Type,
             StartDate = request.StartDate,
             EndDate = request.EndDate,
             Status = AbsenceStatus.Open,
