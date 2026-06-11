@@ -23,5 +23,15 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.HasMany(o => o.Assignees)
             .WithMany(u => u.AssignedOrders)
             .UsingEntity(j => j.ToTable("OrderAssignments"));
+
+        builder.HasMany(o => o.Positions)
+            .WithOne()
+            .HasForeignKey(p => p.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasMany(o => o.Attachments)
+            .WithOne()
+            .HasForeignKey(a => a.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

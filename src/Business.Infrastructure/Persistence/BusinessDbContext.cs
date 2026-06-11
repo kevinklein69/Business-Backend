@@ -10,6 +10,8 @@ public class BusinessDbContext(DbContextOptions<BusinessDbContext> options)
 {
     public DbSet<User> Users => Set<User>();
     public DbSet<Order> Orders => Set<Order>();
+    public DbSet<OrderPosition> OrderPositions => Set<OrderPosition>();
+    public DbSet<OrderAttachment> OrderAttachments => Set<OrderAttachment>();
     public DbSet<TimeEntry> TimeEntries => Set<TimeEntry>();
     public DbSet<AbsenceRequest> AbsenceRequests => Set<AbsenceRequest>();
     public DbSet<CompanySettings> CompanySettings => Set<CompanySettings>();

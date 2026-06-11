@@ -14,4 +14,5 @@ public record UpdateOrderCommand(
     DateOnly? PlannedStartDate,
     DateOnly? PlannedEndDate,
     decimal? ActualHours,
-    string? DeviationReason) : IRequest<OrderDto>;
+    string? DeviationReason,
+    List<OrderPositionInput> Positions) : IRequest<OrderDto>;

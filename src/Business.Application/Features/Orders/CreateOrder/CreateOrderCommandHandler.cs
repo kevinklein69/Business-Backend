@@ -1,6 +1,8 @@
 using Business.Application.Common.Interfaces;
 using Business.Domain.Entities;
 using Business.Domain.Enums;
+using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +16,14 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
         var assignees = await context.Users
             .Where(u => request.AssigneeIds.Contains(u.Id))
             .ToListAsync(cancellationToken);
+
+        if (assignees.Count != request.AssigneeIds.Distinct().Count())
+        {
+            throw new ValidationException(
+            [
+                new ValidationFailure("AssigneeIds", "Mindestens ein zugewiesener Mitarbeiter wurde nicht gefunden.")
+            ]);
+        }
 
         var order = new Order
         {
@@ -30,7 +40,17 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             PlannedEndDate = request.PlannedEndDate,
             ActualHours = request.ActualHours,
             DeviationReason = request.DeviationReason,
-            Assignees = assignees
+            Assignees = assignees,
+            Positions = request.Positions
+                .Select((p, index) => new OrderPosition
+                {
+                    Id = Guid.NewGuid(),
+                    Description = p.Description,
+                    Quantity = p.Quantity,
+                    UnitPrice = p.UnitPrice,
+                    SortOrder = index
+                })
+                .ToList()
         };
 
         context.Orders.Add(order);
@@ -50,6 +70,11 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             order.PlannedEndDate,
             order.ActualHours,
             order.DeviationReason,
-            assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList());
+            assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList(),
+            order.Positions
+                .OrderBy(p => p.SortOrder)
+                .Select(p => new OrderPositionDto(p.Id, p.Description, p.Quantity, p.UnitPrice, p.SortOrder))
+                .ToList(),
+            []);
     }
 }

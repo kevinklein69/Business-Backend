@@ -13,6 +13,8 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
     {
         var order = await context.Orders
             .Include(o => o.Assignees)
+            .Include(o => o.Positions)
+            .Include(o => o.Attachments)
             .FirstOrDefaultAsync(o => o.Id == request.Id, cancellationToken)
             ?? throw new NotFoundException(nameof(Order), request.Id);
 
@@ -32,6 +34,20 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
         order.DeviationReason = request.DeviationReason;
         order.Assignees = assignees;
 
+        order.Positions.Clear();
+        foreach (var (position, index) in request.Positions.Select((p, i) => (p, i)))
+        {
+            order.Positions.Add(new OrderPosition
+            {
+                Id = Guid.NewGuid(),
+                OrderId = order.Id,
+                Description = position.Description,
+                Quantity = position.Quantity,
+                UnitPrice = position.UnitPrice,
+                SortOrder = index
+            });
+        }
+
         await context.SaveChangesAsync(cancellationToken);
 
         return new OrderDto(
@@ -48,6 +64,14 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
             order.PlannedEndDate,
             order.ActualHours,
             order.DeviationReason,
-            assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList());
+            assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList(),
+            order.Positions
+                .OrderBy(p => p.SortOrder)
+                .Select(p => new OrderPositionDto(p.Id, p.Description, p.Quantity, p.UnitPrice, p.SortOrder))
+                .ToList(),
+            order.Attachments
+                .OrderBy(a => a.UploadedAt)
+                .Select(a => new OrderAttachmentDto(a.Id, a.FileName, a.ContentType, a.SizeBytes, a.UploadedAt))
+                .ToList());
     }
 }

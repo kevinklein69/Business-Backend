@@ -13,6 +13,8 @@ public class UpdateOrderStatusCommandHandler(IApplicationDbContext context)
     {
         var order = await context.Orders
             .Include(o => o.Assignees)
+            .Include(o => o.Positions)
+            .Include(o => o.Attachments)
             .FirstOrDefaultAsync(o => o.Id == request.Id, cancellationToken)
             ?? throw new NotFoundException(nameof(Order), request.Id);
 
@@ -34,6 +36,14 @@ public class UpdateOrderStatusCommandHandler(IApplicationDbContext context)
             order.PlannedEndDate,
             order.ActualHours,
             order.DeviationReason,
-            order.Assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList());
+            order.Assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList(),
+            order.Positions
+                .OrderBy(p => p.SortOrder)
+                .Select(p => new OrderPositionDto(p.Id, p.Description, p.Quantity, p.UnitPrice, p.SortOrder))
+                .ToList(),
+            order.Attachments
+                .OrderBy(a => a.UploadedAt)
+                .Select(a => new OrderAttachmentDto(a.Id, a.FileName, a.ContentType, a.SizeBytes, a.UploadedAt))
+                .ToList());
     }
 }

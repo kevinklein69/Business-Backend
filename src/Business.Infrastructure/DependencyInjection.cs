@@ -20,6 +20,9 @@ public static class DependencyInjection
 
         services.AddHttpContextAccessor();
 
+        services.Configure<FileStorageOptions>(configuration.GetSection("FileStorage"));
+        services.AddScoped<IFileStorageService, LocalFileStorageService>();
+
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();

@@ -62,6 +62,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
     {
         context.Response.ContentType = "application/problem+json";
         context.Response.StatusCode = (int)statusCode;
-        return context.Response.WriteAsJsonAsync(problem);
+        // Serialize the runtime type, otherwise ValidationProblemDetails.Errors is dropped.
+        return context.Response.WriteAsJsonAsync(problem, problem.GetType());
     }
 }

@@ -7,6 +7,8 @@ public interface IApplicationDbContext
 {
     DbSet<User> Users { get; }
     DbSet<Order> Orders { get; }
+    DbSet<OrderPosition> OrderPositions { get; }
+    DbSet<OrderAttachment> OrderAttachments { get; }
     DbSet<TimeEntry> TimeEntries { get; }
     DbSet<AbsenceRequest> AbsenceRequests { get; }
     DbSet<CompanySettings> CompanySettings { get; }
