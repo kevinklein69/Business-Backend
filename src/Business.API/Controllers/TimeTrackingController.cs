@@ -28,9 +28,13 @@ public class TimeTrackingController(ISender sender) : ControllerBase
     }
 
     [HttpGet("entries")]
-    public async Task<ActionResult<List<TimeEntryDto>>> GetEntries(CancellationToken cancellationToken)
+    public async Task<ActionResult<List<TimeEntryDto>>> GetEntries(
+        [FromQuery] int? year,
+        [FromQuery] int? month,
+        CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new GetEntriesQuery(), cancellationToken);
+        var now = DateTime.UtcNow;
+        var result = await sender.Send(new GetEntriesQuery(year ?? now.Year, month ?? now.Month), cancellationToken);
         return Ok(result);
     }
 
