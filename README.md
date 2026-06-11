@@ -38,6 +38,23 @@ Clean Architecture Backend für die Business-App, gebaut mit ASP.NET Core 8 und 
 
 Die API-Dokumentation ist unter [http://localhost:5228/swagger](http://localhost:5228/swagger) erreichbar.
 
+## Datei-Uploads (Auftrags-Anhänge)
+
+Hochgeladene Dateien (Bilder, PDFs etc. an Aufträgen) werden im Dateisystem gespeichert, die Metadaten in der Tabelle `OrderAttachments`. Der Speicherort ist in `appsettings.json` konfigurierbar:
+
+```json
+"FileStorage": { "RootPath": "App_Data/uploads", "MaxFileSizeMb": 10 }
+```
+
+Lokal landen die Dateien unter `src/Business.API/App_Data/uploads/orders/{auftrags-id}/`.
+
+**⚠️ Wichtig fürs Hosting (sonst gehen Uploads beim Deployment verloren):**
+
+- `RootPath` auf einen **absoluten Pfad außerhalb des App-Ordners** legen (z. B. `/var/lib/business/uploads`), per `appsettings.Production.json` oder Umgebungsvariable `FileStorage__RootPath`.
+- Bei **Docker** den Pfad als **Volume** mounten — Dateien im Container überleben kein neues Image.
+- Den Upload-Ordner **gemeinsam mit der Datenbank sichern** (Metadaten und Dateien gehören zusammen).
+- Bei mehreren API-Instanzen (Load Balancer) reicht lokales Dateisystem nicht mehr — dann eine S3/Blob-Implementierung von `IFileStorageService` ergänzen.
+
 ## Projektstruktur
 
 ```

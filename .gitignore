@@ -482,3 +482,6 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Laufzeitdaten: hochgeladene Auftrags-Anhänge
+src/Business.API/App_Data/
