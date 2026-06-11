@@ -2,7 +2,7 @@ namespace Business.Domain.Enums;
 
 public enum OrderStatus
 {
-    Backlog,
+    ToDo,
     InProgress,
     ReadyForAcceptance,
     Invoicing,

@@ -5,6 +5,7 @@ using Business.Application.Features.Orders.DeleteAttachment;
 using Business.Application.Features.Orders.GetAttachment;
 using Business.Application.Features.Orders.GetOrders;
 using Business.Application.Features.Orders.UpdateOrder;
+using Business.Application.Features.Orders.UpdateOrderPlanningPeriod;
 using Business.Application.Features.Orders.UpdateOrderStatus;
 using Business.Application.Features.Orders.UploadAttachments;
 using Business.Domain.Enums;
@@ -36,6 +37,8 @@ public class OrdersController(ISender sender) : ControllerBase
         List<UpsertOrderPositionRequest>? Positions);
 
     public record UpdateStatusRequest(OrderStatus Status);
+
+    public record UpdatePlanningPeriodRequest(Guid? PlanningPeriodId);
 
     [HttpGet]
     public async Task<ActionResult<List<OrderDto>>> GetAll(CancellationToken cancellationToken)
@@ -102,6 +105,20 @@ public class OrdersController(ISender sender) : ControllerBase
         try
         {
             var result = await sender.Send(new UpdateOrderStatusCommand(id, request.Status), cancellationToken);
+            return Ok(result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPatch("{id:guid}/planning-period")]
+    public async Task<ActionResult<OrderDto>> UpdatePlanningPeriod(Guid id, UpdatePlanningPeriodRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await sender.Send(new UpdateOrderPlanningPeriodCommand(id, request.PlanningPeriodId), cancellationToken);
             return Ok(result);
         }
         catch (NotFoundException)

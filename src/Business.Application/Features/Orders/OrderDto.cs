@@ -17,6 +17,7 @@ public record OrderDto(
     string? Customer,
     OrderStatus Status,
     DateTime CreatedAt,
+    Guid? PlanningPeriodId,
     decimal? Revenue,
     DateOnly? InvoiceDate,
     decimal? EstimatedHours,

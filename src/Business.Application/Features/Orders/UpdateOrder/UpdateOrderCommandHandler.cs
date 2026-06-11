@@ -57,6 +57,7 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
             order.Customer,
             order.Status,
             order.CreatedAt,
+            order.PlanningPeriodId,
             order.Revenue,
             order.InvoiceDate,
             order.EstimatedHours,

@@ -1,18 +1,17 @@
 using Business.Application.Common.Interfaces;
-using Business.Domain.Enums;
+using Business.Application.Features.Orders;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Business.Application.Features.Orders.GetOrders;
+namespace Business.Application.Features.PlanningPeriods.GetPlanningPeriodOrders;
 
-public class GetOrdersQueryHandler(IApplicationDbContext context)
-    : IRequestHandler<GetOrdersQuery, List<OrderDto>>
+public class GetPlanningPeriodOrdersQueryHandler(IApplicationDbContext context)
+    : IRequestHandler<GetPlanningPeriodOrdersQuery, List<OrderDto>>
 {
-    public async Task<List<OrderDto>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
+    public async Task<List<OrderDto>> Handle(GetPlanningPeriodOrdersQuery request, CancellationToken cancellationToken)
     {
-        // Aufträge aus abgeschlossenen Zeiträumen werden lazy via GetPlanningPeriodOrders geladen.
         return await context.Orders
-            .Where(o => o.PlanningPeriod == null || o.PlanningPeriod.Status != PlanningPeriodStatus.Closed)
+            .Where(o => o.PlanningPeriodId == request.PeriodId)
             .OrderByDescending(o => o.CreatedAt)
             .Select(o => new OrderDto(
                 o.Id,

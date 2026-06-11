@@ -75,7 +75,7 @@ public static class DbSeeder
         (string Title, string? Description, string? Customer, OrderStatus Status, DateTime CreatedAt, string[] Assignees)[] specs =
         [
             ("Inspect heating system", null, "The Berger Family",
-                OrderStatus.Backlog, Utc(2026, 6, 1), []),
+                OrderStatus.ToDo, Utc(2026, 6, 1), []),
             ("Roof inspection", "Annual inspection", "Property Management Ltd.",
                 OrderStatus.InProgress, Utc(2026, 6, 2), ["Max Müller", "Anna Schmidt"]),
             ("Electrical installation - ground floor", null, null,
