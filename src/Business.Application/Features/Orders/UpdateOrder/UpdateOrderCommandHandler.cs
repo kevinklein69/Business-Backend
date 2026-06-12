@@ -34,7 +34,6 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
         order.EstimatedHours = request.EstimatedHours;
         order.PlannedStartDate = request.PlannedStartDate;
         order.PlannedEndDate = request.PlannedEndDate;
-        order.ActualHours = request.ActualHours;
         order.DeviationReason = request.DeviationReason;
         order.Assignees = assignees;
 

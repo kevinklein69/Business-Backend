@@ -9,6 +9,9 @@ using Business.Application.Features.Orders.UpdateOrder;
 using Business.Application.Features.Orders.UpdateOrderPlanningPeriod;
 using Business.Application.Features.Orders.UpdateOrderStatus;
 using Business.Application.Features.Orders.UploadAttachments;
+using Business.Application.Features.TimeTracking.GetOrderClockStatus;
+using Business.Application.Features.TimeTracking.GetOrderTimeBreakdown;
+using Business.Application.Features.TimeTracking.ToggleOrderClock;
 using Business.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -37,7 +40,6 @@ public class OrdersController(ISender sender) : ControllerBase
         decimal? EstimatedHours,
         DateOnly? PlannedStartDate,
         DateOnly? PlannedEndDate,
-        decimal? ActualHours,
         string? DeviationReason,
         List<UpsertOrderPositionRequest>? Positions);
 
@@ -72,7 +74,6 @@ public class OrdersController(ISender sender) : ControllerBase
                 request.EstimatedHours,
                 request.PlannedStartDate,
                 request.PlannedEndDate,
-                request.ActualHours,
                 request.DeviationReason,
                 MapPositions(request.Positions)),
             cancellationToken);
@@ -101,7 +102,6 @@ public class OrdersController(ISender sender) : ControllerBase
                     request.EstimatedHours,
                     request.PlannedStartDate,
                     request.PlannedEndDate,
-                    request.ActualHours,
                     request.DeviationReason,
                     MapPositions(request.Positions)),
                 cancellationToken);
@@ -112,6 +112,37 @@ public class OrdersController(ISender sender) : ControllerBase
         {
             return NotFound();
         }
+    }
+
+    /// Employee clocks in/out of this order (Auftrags-Stempel). Recalculates Order.ActualHours on clock-out.
+    [HttpPost("{id:guid}/clock")]
+    public async Task<ActionResult<ToggleOrderClockResult>> ToggleClock(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await sender.Send(new ToggleOrderClockCommand(id), cancellationToken);
+            return Ok(result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    /// Current user's clock status for this order.
+    [HttpGet("{id:guid}/clock-status")]
+    public async Task<ActionResult<OrderClockStatusDto>> GetClockStatus(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetOrderClockStatusQuery(id), cancellationToken);
+        return Ok(result);
+    }
+
+    /// Per-employee breakdown of net minutes worked on this order.
+    [HttpGet("{id:guid}/time-breakdown")]
+    public async Task<ActionResult<List<OrderTimeBreakdownEntryDto>>> GetTimeBreakdown(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetOrderTimeBreakdownQuery(id), cancellationToken);
+        return Ok(result);
     }
 
     [HttpPatch("{id:guid}/status")]

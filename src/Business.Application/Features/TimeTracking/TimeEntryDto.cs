@@ -13,7 +13,9 @@ public record TimeEntryDto(
     int NetDurationMinutes,
     bool IsManual,
     TimeEntryStatus Status,
-    string? Note);
+    string? Note,
+    Guid? OrderId,
+    string? OrderTitle);
 
 public static class TimeEntryExtensions
 {
@@ -32,7 +34,9 @@ public static class TimeEntryExtensions
             gross - brk,
             entry.IsManual,
             entry.Status,
-            entry.Note);
+            entry.Note,
+            entry.OrderId,
+            entry.Order?.Title);
     }
 
     // ArbSchG §4: 30 min break from 6 h, 45 min from more than 9 h.

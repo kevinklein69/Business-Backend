@@ -12,4 +12,8 @@ public class TimeEntry
     public TimeEntryStatus Status { get; set; } = TimeEntryStatus.Approved;
     public bool IsManual { get; set; }
     public string? Note { get; set; }
+
+    // Optional order this time entry was clocked against (Auftrags-Stempel). null ⇒ general attendance entry.
+    public Guid? OrderId { get; set; }
+    public Order? Order { get; set; }
 }

@@ -37,10 +37,6 @@ public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
             .GreaterThanOrEqualTo(0)
             .When(x => x.EstimatedHours.HasValue);
 
-        RuleFor(x => x.ActualHours)
-            .GreaterThanOrEqualTo(0)
-            .When(x => x.ActualHours.HasValue);
-
         RuleFor(x => x.PlannedEndDate)
             .GreaterThanOrEqualTo(x => x.PlannedStartDate!.Value)
             .When(x => x.PlannedStartDate.HasValue && x.PlannedEndDate.HasValue)

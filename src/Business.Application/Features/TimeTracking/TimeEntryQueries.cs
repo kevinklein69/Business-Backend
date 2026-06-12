@@ -20,6 +20,7 @@ public static class TimeEntryQueries
                      && t.ClockOut != null
                      && t.ClockIn >= monthStart
                      && t.ClockIn < monthEnd)
+            .Include(t => t.Order)
             .OrderByDescending(t => t.ClockIn)
             .ToListAsync(cancellationToken);
 
@@ -92,5 +93,26 @@ public static class TimeEntryQueries
             monthMinutes,
             monthTargetMinutes,
             totalBalanceMinutes);
+    }
+
+    /// Recalculates Order.ActualHours from the net minutes of all completed, approved
+    /// order-related time entries (across all employees). Does not call SaveChanges.
+    public static async Task RecalculateOrderActualHoursAsync(
+        IApplicationDbContext context, Guid orderId, CancellationToken cancellationToken)
+    {
+        var order = await context.Orders.FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
+        if (order is null) return;
+
+        var entries = await context.TimeEntries
+            .Where(t => t.OrderId == orderId && t.ClockOut != null && t.Status == TimeEntryStatus.Approved)
+            .ToListAsync(cancellationToken);
+
+        var totalNetMinutes = entries.Sum(t =>
+        {
+            var gross = (int)(t.ClockOut!.Value - t.ClockIn).TotalMinutes;
+            return gross - TimeEntryExtensions.CalculateBreakMinutes(gross);
+        });
+
+        order.ActualHours = Math.Round(totalNetMinutes / 60m, 2);
     }
 }

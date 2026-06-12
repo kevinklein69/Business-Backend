@@ -24,5 +24,11 @@ public class TimeEntryConfiguration : IEntityTypeConfiguration<TimeEntry>
 
         builder.HasIndex(t => new { t.UserId, t.ClockOut });
         builder.HasIndex(t => new { t.UserId, t.Status });
+        builder.HasIndex(t => new { t.OrderId, t.UserId, t.ClockOut });
+
+        builder.HasOne(t => t.Order)
+            .WithMany()
+            .HasForeignKey(t => t.OrderId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

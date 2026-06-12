@@ -42,7 +42,6 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             EstimatedHours = request.EstimatedHours,
             PlannedStartDate = request.PlannedStartDate,
             PlannedEndDate = request.PlannedEndDate,
-            ActualHours = request.ActualHours,
             DeviationReason = request.DeviationReason,
             Assignees = assignees,
             Positions = request.Positions
