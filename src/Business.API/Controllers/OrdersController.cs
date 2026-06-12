@@ -4,6 +4,7 @@ using Business.Application.Features.Orders.CreateOrder;
 using Business.Application.Features.Orders.DeleteAttachment;
 using Business.Application.Features.Orders.GetAttachment;
 using Business.Application.Features.Orders.GetOrders;
+using Business.Application.Features.Orders.SignAcceptance;
 using Business.Application.Features.Orders.UpdateOrder;
 using Business.Application.Features.Orders.UpdateOrderPlanningPeriod;
 using Business.Application.Features.Orders.UpdateOrderStatus;
@@ -39,6 +40,8 @@ public class OrdersController(ISender sender) : ControllerBase
     public record UpdateStatusRequest(OrderStatus Status);
 
     public record UpdatePlanningPeriodRequest(Guid? PlanningPeriodId);
+
+    public record SignAcceptanceRequest(string SignerName, string SignatureImageBase64);
 
     [HttpGet]
     public async Task<ActionResult<List<OrderDto>>> GetAll(CancellationToken cancellationToken)
@@ -105,6 +108,24 @@ public class OrdersController(ISender sender) : ControllerBase
         try
         {
             var result = await sender.Send(new UpdateOrderStatusCommand(id, request.Status), cancellationToken);
+            return Ok(result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPost("{id:guid}/acceptance")]
+    [Authorize(Roles = "Admin,Manager")]
+    public async Task<ActionResult<OrderDto>> SignAcceptance(Guid id, SignAcceptanceRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await sender.Send(
+                new SignOrderAcceptanceCommand(id, request.SignerName, request.SignatureImageBase64),
+                cancellationToken);
+
             return Ok(result);
         }
         catch (NotFoundException)

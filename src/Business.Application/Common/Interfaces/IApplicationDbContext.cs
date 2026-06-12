@@ -10,6 +10,7 @@ public interface IApplicationDbContext
     DbSet<PlanningPeriod> PlanningPeriods { get; }
     DbSet<OrderPosition> OrderPositions { get; }
     DbSet<OrderAttachment> OrderAttachments { get; }
+    DbSet<OrderAcceptance> OrderAcceptances { get; }
     DbSet<TimeEntry> TimeEntries { get; }
     DbSet<AbsenceRequest> AbsenceRequests { get; }
     DbSet<CompanySettings> CompanySettings { get; }

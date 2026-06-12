@@ -37,6 +37,15 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
                 Status = (int)HttpStatusCode.NotFound,
             });
         }
+        catch (ConflictException ex)
+        {
+            await WriteProblemAsync(context, HttpStatusCode.Conflict, new ProblemDetails
+            {
+                Title = "Conflict",
+                Detail = ex.Message,
+                Status = (int)HttpStatusCode.Conflict,
+            });
+        }
         catch (UnauthorizedAccessException ex)
         {
             await WriteProblemAsync(context, HttpStatusCode.Unauthorized, new ProblemDetails
