@@ -4,6 +4,8 @@ using Business.Application.Features.TimeTracking.CreateManualEntry;
 using Business.Application.Features.TimeTracking.EditEntry;
 using Business.Application.Features.TimeTracking.GetBalance;
 using Business.Application.Features.TimeTracking.GetClockStatus;
+using Business.Application.Features.TimeTracking.GetEmployeeBalance;
+using Business.Application.Features.TimeTracking.GetEmployeeEntries;
 using Business.Application.Features.TimeTracking.GetEntries;
 using Business.Application.Features.TimeTracking.GetPendingEntries;
 using Business.Application.Features.TimeTracking.ToggleClock;
@@ -55,6 +57,29 @@ public class TimeTrackingController(ISender sender) : ControllerBase
     public async Task<ActionResult<BalanceDto>> GetBalance(CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetBalanceQuery(), cancellationToken);
+        return Ok(result);
+    }
+
+    /// Manager/Admin: time entries of a specific employee for a given month.
+    [HttpGet("entries/{userId:guid}")]
+    [Authorize(Roles = "Admin,Manager")]
+    public async Task<ActionResult<List<TimeEntryDto>>> GetEmployeeEntries(
+        Guid userId,
+        [FromQuery] int? year,
+        [FromQuery] int? month,
+        CancellationToken cancellationToken)
+    {
+        var now = DateTime.UtcNow;
+        var result = await sender.Send(new GetEmployeeEntriesQuery(userId, year ?? now.Year, month ?? now.Month), cancellationToken);
+        return Ok(result);
+    }
+
+    /// Manager/Admin: time account balance of a specific employee.
+    [HttpGet("balance/{userId:guid}")]
+    [Authorize(Roles = "Admin,Manager")]
+    public async Task<ActionResult<BalanceDto>> GetEmployeeBalance(Guid userId, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetEmployeeBalanceQuery(userId), cancellationToken);
         return Ok(result);
     }
 
