@@ -13,6 +13,22 @@ public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
         RuleFor(x => x.Customer)
             .MaximumLength(200);
 
+        RuleFor(x => x.Street)
+            .NotEmpty().WithMessage("Die Straße ist erforderlich.")
+            .MaximumLength(200);
+
+        RuleFor(x => x.HouseNumber)
+            .NotEmpty().WithMessage("Die Hausnummer ist erforderlich.")
+            .MaximumLength(20);
+
+        RuleFor(x => x.Zip)
+            .NotEmpty().WithMessage("Die PLZ ist erforderlich.")
+            .MaximumLength(10);
+
+        RuleFor(x => x.City)
+            .NotEmpty().WithMessage("Der Ort ist erforderlich.")
+            .MaximumLength(100);
+
         RuleFor(x => x.Revenue)
             .GreaterThanOrEqualTo(0)
             .When(x => x.Revenue.HasValue);

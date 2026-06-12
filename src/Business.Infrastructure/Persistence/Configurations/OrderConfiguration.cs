@@ -13,6 +13,10 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         builder.Property(o => o.Title).IsRequired().HasMaxLength(200);
         builder.Property(o => o.Description).HasMaxLength(2000);
         builder.Property(o => o.Customer).HasMaxLength(200);
+        builder.Property(o => o.Street).IsRequired().HasMaxLength(200);
+        builder.Property(o => o.HouseNumber).IsRequired().HasMaxLength(20);
+        builder.Property(o => o.Zip).IsRequired().HasMaxLength(10);
+        builder.Property(o => o.City).IsRequired().HasMaxLength(100);
         builder.Property(o => o.Status).HasConversion<string>().HasMaxLength(30);
 
         builder.Property(o => o.Revenue).HasPrecision(12, 2);

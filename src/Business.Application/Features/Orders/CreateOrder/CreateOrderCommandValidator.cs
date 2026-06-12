@@ -14,6 +14,22 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
             .NotEmpty().WithMessage("Der Kunde ist erforderlich.")
             .MaximumLength(200);
 
+        RuleFor(x => x.Street)
+            .NotEmpty().WithMessage("Die Straße ist erforderlich.")
+            .MaximumLength(200);
+
+        RuleFor(x => x.HouseNumber)
+            .NotEmpty().WithMessage("Die Hausnummer ist erforderlich.")
+            .MaximumLength(20);
+
+        RuleFor(x => x.Zip)
+            .NotEmpty().WithMessage("Die PLZ ist erforderlich.")
+            .MaximumLength(10);
+
+        RuleFor(x => x.City)
+            .NotEmpty().WithMessage("Der Ort ist erforderlich.")
+            .MaximumLength(100);
+
         RuleFor(x => x.PlannedStartDate)
             .NotNull().WithMessage("Das geplante Startdatum ist erforderlich.");
 

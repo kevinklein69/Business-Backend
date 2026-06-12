@@ -72,19 +72,25 @@ public static class DbSeeder
 
     private static List<Order> CreateOrders(IReadOnlyDictionary<string, User> byName)
     {
-        (string Title, string? Description, string? Customer, OrderStatus Status, DateTime CreatedAt, string[] Assignees)[] specs =
+        (string Title, string? Description, string? Customer, string Street, string HouseNumber, string Zip, string City, OrderStatus Status, DateTime CreatedAt, string[] Assignees)[] specs =
         [
             ("Inspect heating system", null, "The Berger Family",
+                "Hauptstraße", "12", "70173", "Stuttgart",
                 OrderStatus.ToDo, Utc(2026, 6, 1), []),
             ("Roof inspection", "Annual inspection", "Property Management Ltd.",
+                "Bahnhofstraße", "5", "70435", "Stuttgart",
                 OrderStatus.InProgress, Utc(2026, 6, 2), ["Max Müller", "Anna Schmidt"]),
             ("Electrical installation - ground floor", null, null,
+                "Gartenweg", "3", "70499", "Stuttgart",
                 OrderStatus.InProgress, Utc(2026, 5, 28), ["Tom Wagner"]),
             ("Plumbing - upper floor", null, "Mr. Meier",
+                "Schillerstraße", "21", "70178", "Stuttgart",
                 OrderStatus.ReadyForAcceptance, Utc(2026, 5, 20), ["Max Müller"]),
             ("Window replacement - 2nd floor", "All 4 windows", "Ms. Koch",
+                "Goethestraße", "8", "70184", "Stuttgart",
                 OrderStatus.Invoicing, Utc(2026, 5, 15), ["Tom Wagner", "Jonas Fischer"]),
             ("Painting work - ground floor", null, null,
+                "Lindenallee", "17", "70195", "Stuttgart",
                 OrderStatus.Done, Utc(2026, 5, 10), ["Lisa Bauer"]),
         ];
 
@@ -94,6 +100,10 @@ public static class DbSeeder
             Title = s.Title,
             Description = s.Description,
             Customer = s.Customer,
+            Street = s.Street,
+            HouseNumber = s.HouseNumber,
+            Zip = s.Zip,
+            City = s.City,
             Status = s.Status,
             CreatedAt = s.CreatedAt,
             Assignees = s.Assignees.Select(name => byName[name]).ToList(),

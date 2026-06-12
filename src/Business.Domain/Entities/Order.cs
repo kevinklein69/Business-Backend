@@ -8,6 +8,10 @@ public class Order
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Customer { get; set; }
+    public string Street { get; set; } = string.Empty;
+    public string HouseNumber { get; set; } = string.Empty;
+    public string Zip { get; set; } = string.Empty;
+    public string City { get; set; } = string.Empty;
     public OrderStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
 

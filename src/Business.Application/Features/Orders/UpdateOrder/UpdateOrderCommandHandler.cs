@@ -25,6 +25,10 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
         order.Title = request.Title;
         order.Description = request.Description;
         order.Customer = request.Customer;
+        order.Street = request.Street;
+        order.HouseNumber = request.HouseNumber;
+        order.Zip = request.Zip;
+        order.City = request.City;
         order.Revenue = request.Revenue;
         order.InvoiceDate = request.InvoiceDate;
         order.EstimatedHours = request.EstimatedHours;
@@ -55,6 +59,10 @@ public class UpdateOrderCommandHandler(IApplicationDbContext context)
             order.Title,
             order.Description,
             order.Customer,
+            order.Street,
+            order.HouseNumber,
+            order.Zip,
+            order.City,
             order.Status,
             order.CreatedAt,
             order.PlanningPeriodId,
