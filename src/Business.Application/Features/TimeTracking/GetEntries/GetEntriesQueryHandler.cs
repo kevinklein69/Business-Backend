@@ -23,27 +23,6 @@ public class GetEntriesQueryHandler(IApplicationDbContext context, ICurrentUserS
             .OrderByDescending(t => t.ClockIn)
             .ToListAsync(cancellationToken);
 
-        return entries
-            .Select(t =>
-            {
-                var gross = (int)(t.ClockOut!.Value - t.ClockIn).TotalMinutes;
-                var brk   = CalculateBreakMinutes(gross);
-                return new TimeEntryDto(
-                    DateOnly.FromDateTime(t.ClockIn),
-                    t.ClockIn,
-                    t.ClockOut!.Value,
-                    gross,
-                    brk,
-                    gross - brk);
-            })
-            .ToList();
+        return entries.Select(t => t.ToDto()).ToList();
     }
-
-    // ArbSchG §4: 30 min break from 6 h, 45 min from more than 9 h.
-    private static int CalculateBreakMinutes(int grossMinutes) => grossMinutes switch
-    {
-        > 540 => 45,
-        >= 360 => 30,
-        _ => 0,
-    };
 }

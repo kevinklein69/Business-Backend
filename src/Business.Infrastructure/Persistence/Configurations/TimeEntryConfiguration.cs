@@ -1,4 +1,5 @@
 using Business.Domain.Entities;
+using Business.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -12,6 +13,16 @@ public class TimeEntryConfiguration : IEntityTypeConfiguration<TimeEntry>
 
         builder.Property(t => t.ClockIn).IsRequired();
 
+        builder.Property(t => t.Status)
+            .HasConversion<string>()
+            .HasMaxLength(20)
+            .HasDefaultValue(TimeEntryStatus.Approved);
+
+        builder.Property(t => t.IsManual).HasDefaultValue(false);
+
+        builder.Property(t => t.Note).HasMaxLength(500);
+
         builder.HasIndex(t => new { t.UserId, t.ClockOut });
+        builder.HasIndex(t => new { t.UserId, t.Status });
     }
 }

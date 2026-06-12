@@ -1,5 +1,6 @@
 using Business.Application.Common.Interfaces;
 using Business.Domain.Entities;
+using Business.Domain.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,7 +30,9 @@ public class ToggleClockCommandHandler(IApplicationDbContext context, ICurrentUs
             Id = Guid.NewGuid(),
             UserId = userId,
             ClockIn = DateTime.UtcNow,
-            ClockOut = null
+            ClockOut = null,
+            Status = TimeEntryStatus.Approved,
+            IsManual = false
         };
 
         context.TimeEntries.Add(entry);

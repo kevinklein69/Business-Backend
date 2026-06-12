@@ -14,7 +14,7 @@ public class GetBalanceQueryHandler(IApplicationDbContext context, ICurrentUserS
             ?? throw new UnauthorizedAccessException("No authenticated user.");
 
         var entries = await context.TimeEntries
-            .Where(t => t.UserId == userId && t.ClockOut != null)
+            .Where(t => t.UserId == userId && t.ClockOut != null && t.Status == TimeEntryStatus.Approved)
             .ToListAsync(cancellationToken);
 
         // Aggregate worked minutes per calendar day.
