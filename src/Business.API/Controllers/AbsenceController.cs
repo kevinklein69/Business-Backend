@@ -1,9 +1,11 @@
 using Business.Application.Common.Exceptions;
 using Business.Application.Features.Absence;
 using Business.Application.Features.Absence.CreateRequest;
+using Business.Application.Features.Absence.DeleteRequest;
 using Business.Application.Features.Absence.GetMyRequests;
 using Business.Application.Features.Absence.GetTeamRequests;
 using Business.Application.Features.Absence.RecordAbsence;
+using Business.Application.Features.Absence.UpdateRequest;
 using Business.Application.Features.Absence.UpdateRequestStatus;
 using Business.Domain.Enums;
 using MediatR;
@@ -18,6 +20,8 @@ namespace Business.API.Controllers;
 public class AbsenceController(ISender sender) : ControllerBase
 {
     public record CreateRequestBody(AbsenceType Type, DateOnly StartDate, DateOnly EndDate, string? Comment);
+
+    public record UpdateRequestBody(AbsenceType Type, DateOnly StartDate, DateOnly EndDate, string? Comment);
 
     public record UpdateStatusRequest(AbsenceStatus Status);
 
@@ -48,6 +52,40 @@ public class AbsenceController(ISender sender) : ControllerBase
         {
             var result = await sender.Send(new UpdateRequestStatusCommand(id, request.Status), cancellationToken);
             return Ok(result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    /// Eigenen (oder als Admin/Manager fremden) Antrag bearbeiten, solange dieser noch nicht begonnen hat.
+    /// Setzt den Status zurück auf "Offen", da der geänderte Antrag erneut geprüft werden muss.
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<AbsenceRequestDto>> Update(Guid id, UpdateRequestBody request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await sender.Send(
+                new UpdateRequestCommand(id, request.Type, request.StartDate, request.EndDate, request.Comment),
+                cancellationToken);
+
+            return Ok(result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    /// Eigenen (oder als Admin/Manager fremden) Antrag stornieren, solange dieser noch nicht begonnen hat.
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await sender.Send(new DeleteRequestCommand(id), cancellationToken);
+            return NoContent();
         }
         catch (NotFoundException)
         {
