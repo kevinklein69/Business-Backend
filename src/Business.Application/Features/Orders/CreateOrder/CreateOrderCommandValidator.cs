@@ -36,19 +36,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.PlannedEndDate)
             .NotNull().WithMessage("Das geplante Enddatum ist erforderlich.");
 
-        RuleForEach(x => x.Positions).ChildRules(position =>
-        {
-            position.RuleFor(p => p.Description)
-                .NotEmpty().WithMessage("Die Leistung ist erforderlich.")
-                .MaximumLength(500);
-
-            position.RuleFor(p => p.Quantity)
-                .GreaterThan(0).WithMessage("Die Menge muss größer als 0 sein.");
-
-            position.RuleFor(p => p.UnitPrice)
-                .GreaterThanOrEqualTo(0).WithMessage("Der Einzelpreis darf nicht negativ sein.");
-        });
-
         RuleFor(x => x.Revenue)
             .GreaterThanOrEqualTo(0)
             .When(x => x.Revenue.HasValue);

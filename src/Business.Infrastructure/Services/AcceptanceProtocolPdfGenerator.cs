@@ -49,37 +49,6 @@ public class AcceptanceProtocolPdfGenerator : IAcceptanceProtocolPdfGenerator
                         column.Item().Text($"Zeitraum: {FormatDate(order.PlannedStartDate)} - {FormatDate(order.PlannedEndDate)}");
                     }
 
-                    if (order.Positions.Count > 0)
-                    {
-                        column.Item().PaddingTop(10).Text("Leistungen").FontSize(14).Bold();
-                        column.Item().Table(table =>
-                        {
-                            table.ColumnsDefinition(columns =>
-                            {
-                                columns.RelativeColumn(3);
-                                columns.RelativeColumn(1);
-                                columns.RelativeColumn(1);
-                                columns.RelativeColumn(1);
-                            });
-
-                            table.Header(header =>
-                            {
-                                header.Cell().Text("Leistung").Bold();
-                                header.Cell().AlignRight().Text("Menge").Bold();
-                                header.Cell().AlignRight().Text("Einzelpreis").Bold();
-                                header.Cell().AlignRight().Text("Gesamt").Bold();
-                            });
-
-                            foreach (var position in order.Positions.OrderBy(p => p.SortOrder))
-                            {
-                                table.Cell().Text(position.Description);
-                                table.Cell().AlignRight().Text(position.Quantity.ToString("0.##", Culture));
-                                table.Cell().AlignRight().Text(position.UnitPrice.ToString("C", Culture));
-                                table.Cell().AlignRight().Text((position.Quantity * position.UnitPrice).ToString("C", Culture));
-                            }
-                        });
-                    }
-
                     column.Item().PaddingTop(20).Text("Kundenabnahme").FontSize(14).Bold();
                     column.Item().Text($"Datum/Uhrzeit: {acceptance.SignedAt.ToLocalTime():dd.MM.yyyy HH:mm}");
                     column.Item().Text($"Unterzeichner: {acceptance.SignerName}");

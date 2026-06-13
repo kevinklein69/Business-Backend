@@ -28,7 +28,6 @@ public class Order
     public PlanningPeriod? PlanningPeriod { get; set; }
 
     public ICollection<User> Assignees { get; set; } = new List<User>();
-    public ICollection<OrderPosition> Positions { get; set; } = new List<OrderPosition>();
     public ICollection<OrderAttachment> Attachments { get; set; } = new List<OrderAttachment>();
     public OrderAcceptance? Acceptance { get; set; }
 }

@@ -44,18 +44,5 @@ public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrderCommand>
 
         RuleFor(x => x.DeviationReason)
             .MaximumLength(500);
-
-        RuleForEach(x => x.Positions).ChildRules(position =>
-        {
-            position.RuleFor(p => p.Description)
-                .NotEmpty().WithMessage("Die Leistung ist erforderlich.")
-                .MaximumLength(500);
-
-            position.RuleFor(p => p.Quantity)
-                .GreaterThan(0).WithMessage("Die Menge muss größer als 0 sein.");
-
-            position.RuleFor(p => p.UnitPrice)
-                .GreaterThanOrEqualTo(0).WithMessage("Der Einzelpreis darf nicht negativ sein.");
-        });
     }
 }

@@ -36,10 +36,6 @@ public class GetOrdersQueryHandler(IApplicationDbContext context)
                 o.Assignees
                     .Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName))
                     .ToList(),
-                o.Positions
-                    .OrderBy(p => p.SortOrder)
-                    .Select(p => new OrderPositionDto(p.Id, p.Description, p.Quantity, p.UnitPrice, p.SortOrder))
-                    .ToList(),
                 o.Attachments
                     .OrderBy(a => a.UploadedAt)
                     .Select(a => new OrderAttachmentDto(a.Id, a.FileName, a.ContentType, a.SizeBytes, a.UploadedAt))

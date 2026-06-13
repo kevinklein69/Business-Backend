@@ -56,17 +56,7 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             PlannedStartDate = request.PlannedStartDate,
             PlannedEndDate = request.PlannedEndDate,
             DeviationReason = request.DeviationReason,
-            Assignees = assignees,
-            Positions = request.Positions
-                .Select((p, index) => new OrderPosition
-                {
-                    Id = Guid.NewGuid(),
-                    Description = p.Description,
-                    Quantity = p.Quantity,
-                    UnitPrice = p.UnitPrice,
-                    SortOrder = index
-                })
-                .ToList()
+            Assignees = assignees
         };
 
         context.Orders.Add(order);
@@ -92,10 +82,6 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             order.ActualHours,
             order.DeviationReason,
             assignees.Select(a => new AssigneeDto(a.Id, a.FirstName + " " + a.LastName)).ToList(),
-            order.Positions
-                .OrderBy(p => p.SortOrder)
-                .Select(p => new OrderPositionDto(p.Id, p.Description, p.Quantity, p.UnitPrice, p.SortOrder))
-                .ToList(),
             []);
     }
 }

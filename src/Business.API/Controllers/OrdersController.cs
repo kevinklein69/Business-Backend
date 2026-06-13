@@ -25,8 +25,6 @@ namespace Business.API.Controllers;
 [Route("api/orders")]
 public class OrdersController(ISender sender) : ControllerBase
 {
-    public record UpsertOrderPositionRequest(string Description, decimal Quantity, decimal UnitPrice);
-
     public record UpsertOrderRequest(
         string Title,
         string? Description,
@@ -42,7 +40,6 @@ public class OrdersController(ISender sender) : ControllerBase
         DateOnly? PlannedStartDate,
         DateOnly? PlannedEndDate,
         string? DeviationReason,
-        List<UpsertOrderPositionRequest>? Positions,
         Guid? PlanningPeriodId = null);
 
     public record UpdateStatusRequest(OrderStatus Status);
@@ -77,7 +74,6 @@ public class OrdersController(ISender sender) : ControllerBase
                 request.PlannedStartDate,
                 request.PlannedEndDate,
                 request.DeviationReason,
-                MapPositions(request.Positions),
                 request.PlanningPeriodId),
             cancellationToken);
 
@@ -105,8 +101,7 @@ public class OrdersController(ISender sender) : ControllerBase
                     request.EstimatedHours,
                     request.PlannedStartDate,
                     request.PlannedEndDate,
-                    request.DeviationReason,
-                    MapPositions(request.Positions)),
+                    request.DeviationReason),
                 cancellationToken);
 
             return Ok(result);
@@ -262,9 +257,4 @@ public class OrdersController(ISender sender) : ControllerBase
             return NotFound();
         }
     }
-
-    private static List<OrderPositionInput> MapPositions(List<UpsertOrderPositionRequest>? positions) =>
-        (positions ?? [])
-            .Select(p => new OrderPositionInput(p.Description, p.Quantity, p.UnitPrice))
-            .ToList();
 }

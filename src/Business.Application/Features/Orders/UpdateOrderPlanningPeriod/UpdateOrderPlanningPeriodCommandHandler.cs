@@ -15,7 +15,6 @@ public class UpdateOrderPlanningPeriodCommandHandler(IApplicationDbContext conte
     {
         var order = await context.Orders
             .Include(o => o.Assignees)
-            .Include(o => o.Positions)
             .Include(o => o.Attachments)
             .FirstOrDefaultAsync(o => o.Id == request.Id, cancellationToken)
             ?? throw new NotFoundException(nameof(Order), request.Id);
