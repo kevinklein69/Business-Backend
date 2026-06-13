@@ -2,6 +2,7 @@ using Business.Application.Common.Exceptions;
 using Business.Application.Features.Orders;
 using Business.Application.Features.Orders.CreateOrder;
 using Business.Application.Features.Orders.DeleteAttachment;
+using Business.Application.Features.Orders.DeleteOrder;
 using Business.Application.Features.Orders.GetAttachment;
 using Business.Application.Features.Orders.GetOrders;
 using Business.Application.Features.Orders.SignAcceptance;
@@ -109,6 +110,21 @@ public class OrdersController(ISender sender) : ControllerBase
                 cancellationToken);
 
             return Ok(result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin,Manager")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await sender.Send(new DeleteOrderCommand(id), cancellationToken);
+            return NoContent();
         }
         catch (NotFoundException)
         {
