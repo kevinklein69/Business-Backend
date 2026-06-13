@@ -25,6 +25,18 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             ]);
         }
 
+        if (request.PlanningPeriodId is { } periodId)
+        {
+            var periodExists = await context.PlanningPeriods.AnyAsync(p => p.Id == periodId, cancellationToken);
+            if (!periodExists)
+            {
+                throw new ValidationException(
+                [
+                    new ValidationFailure("PlanningPeriodId", "Der angegebene Planungszeitraum wurde nicht gefunden.")
+                ]);
+            }
+        }
+
         var order = new Order
         {
             Id = Guid.NewGuid(),
@@ -37,6 +49,7 @@ public class CreateOrderCommandHandler(IApplicationDbContext context)
             City = request.City,
             Status = OrderStatus.ToDo,
             CreatedAt = DateTime.UtcNow,
+            PlanningPeriodId = request.PlanningPeriodId,
             Revenue = request.Revenue,
             InvoiceDate = request.InvoiceDate,
             EstimatedHours = request.EstimatedHours,

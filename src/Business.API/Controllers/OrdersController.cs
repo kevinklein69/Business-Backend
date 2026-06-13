@@ -41,7 +41,8 @@ public class OrdersController(ISender sender) : ControllerBase
         DateOnly? PlannedStartDate,
         DateOnly? PlannedEndDate,
         string? DeviationReason,
-        List<UpsertOrderPositionRequest>? Positions);
+        List<UpsertOrderPositionRequest>? Positions,
+        Guid? PlanningPeriodId = null);
 
     public record UpdateStatusRequest(OrderStatus Status);
 
@@ -75,7 +76,8 @@ public class OrdersController(ISender sender) : ControllerBase
                 request.PlannedStartDate,
                 request.PlannedEndDate,
                 request.DeviationReason,
-                MapPositions(request.Positions)),
+                MapPositions(request.Positions),
+                request.PlanningPeriodId),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetAll), new { id = result.Id }, result);
