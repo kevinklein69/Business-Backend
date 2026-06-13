@@ -36,9 +36,6 @@ public class CreateOrderCommandValidator : AbstractValidator<CreateOrderCommand>
         RuleFor(x => x.PlannedEndDate)
             .NotNull().WithMessage("Das geplante Enddatum ist erforderlich.");
 
-        RuleFor(x => x.AssigneeIds)
-            .NotEmpty().WithMessage("Mindestens ein Mitarbeiter muss zugewiesen werden.");
-
         RuleForEach(x => x.Positions).ChildRules(position =>
         {
             position.RuleFor(p => p.Description)
