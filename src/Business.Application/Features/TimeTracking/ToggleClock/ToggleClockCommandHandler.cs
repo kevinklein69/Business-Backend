@@ -15,7 +15,7 @@ public class ToggleClockCommandHandler(IApplicationDbContext context, ICurrentUs
             ?? throw new UnauthorizedAccessException("No authenticated user.");
 
         var openEntry = await context.TimeEntries
-            .Where(t => t.UserId == userId && t.ClockOut == null)
+            .Where(t => t.UserId == userId && t.OrderId == null && t.ClockOut == null)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (openEntry is not null)

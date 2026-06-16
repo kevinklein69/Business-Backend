@@ -31,7 +31,7 @@ public static class TimeEntryQueries
         IApplicationDbContext context, Guid userId, CancellationToken cancellationToken)
     {
         var entries = await context.TimeEntries
-            .Where(t => t.UserId == userId && t.ClockOut != null && t.Status == TimeEntryStatus.Approved)
+            .Where(t => t.UserId == userId && t.OrderId == null && t.ClockOut != null && t.Status == TimeEntryStatus.Approved)
             .ToListAsync(cancellationToken);
 
         // Aggregate worked minutes per calendar day.
