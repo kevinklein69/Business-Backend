@@ -64,6 +64,7 @@ public static class DbSeeder
                 Email = s.Email,
                 Role = s.Role,
                 Department = s.Department,
+                EntryDate = new DateOnly(2026, 5, 1),
             };
             user.PasswordHash = passwordHasher.Hash(user, DemoPassword);
             return user;
@@ -115,10 +116,10 @@ public static class DbSeeder
         (DateTime Date, TimeSpan Start, TimeSpan End)[] specs =
         [
             (Utc(2026, 6, 2), new TimeSpan(7, 45, 0), new TimeSpan(16, 30, 0)),
-            (Utc(2026, 6, 1), new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0)),
-            (Utc(2026, 5, 31), new TimeSpan(7, 30, 0), new TimeSpan(15, 0, 0)),
-            (Utc(2026, 5, 30), new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0)),
-            (Utc(2026, 5, 29), new TimeSpan(7, 50, 0), new TimeSpan(16, 15, 0)),
+            (Utc(2026, 5, 26), new TimeSpan(8, 0, 0), new TimeSpan(17, 0, 0)),
+            (Utc(2026, 5, 29), new TimeSpan(7, 30, 0), new TimeSpan(15, 0, 0)),
+            (Utc(2026, 5, 28), new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0)),
+            (Utc(2026, 5, 27), new TimeSpan(7, 50, 0), new TimeSpan(16, 15, 0)),
         ];
 
         return specs.Select(s => new TimeEntry

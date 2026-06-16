@@ -50,14 +50,22 @@ public static class TimeEntryQueries
             for (var date = absence.StartDate; date <= absence.EndDate; date = date.AddDays(1))
             {
                 if (!TimeTrackingConstants.IsWorkday(date)) continue;
-                if (minutesByDay.ContainsKey(date)) continue;
 
-                // FlexTimeCompensation days consume overtime: record 0 worked minutes so the
-                // daily target is subtracted from the balance. All other absence types (Vacation,
-                // Sick, ChildSick) are neutral — they fill the target to keep the balance at zero.
-                minutesByDay[date] = absence.Type == AbsenceType.FlexTimeCompensation
-                    ? 0
-                    : TimeTrackingConstants.DailyTargetMinutes;
+                if (absence.Type == AbsenceType.FlexTimeCompensation)
+                {
+                    // FlexTime only applies when no real work was done that day — it consumes
+                    // 480 min of overtime by recording 0 worked minutes against the daily target.
+                    if (!minutesByDay.ContainsKey(date))
+                        minutesByDay[date] = 0;
+                }
+                else
+                {
+                    // Vacation/sick/etc.: always credit the full daily target on top of any
+                    // actual work. If someone works on a vacation day they keep the vacation
+                    // credit AND earn overtime for the hours they put in.
+                    minutesByDay.TryGetValue(date, out var existing);
+                    minutesByDay[date] = existing + TimeTrackingConstants.DailyTargetMinutes;
+                }
             }
         }
 
@@ -84,8 +92,25 @@ public static class TimeEntryQueries
             .Count(TimeTrackingConstants.IsWorkday);
         var monthTargetMinutes = monthWorkdays * TimeTrackingConstants.DailyTargetMinutes;
 
-        var totalBalanceMinutes = minutesByDay.Sum(kv =>
-            kv.Value - (TimeTrackingConstants.IsWorkday(kv.Key) ? TimeTrackingConstants.DailyTargetMinutes : 0));
+        // Determine the start date for the total balance: use EntryDate if set, otherwise
+        // fall back to the earliest day with an actual entry.
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+        DateOnly? balanceStartDate = user?.EntryDate
+            ?? (minutesByDay.Count > 0 ? minutesByDay.Keys.Min() : null);
+
+        // Enumerate every workday from start up to yesterday (today is still in progress).
+        // Days with no clock-ins and no approved absences count as -480 min (full missed day).
+        var yesterday = today.AddDays(-1);
+        var totalBalanceMinutes = 0;
+        if (balanceStartDate.HasValue)
+        {
+            for (var date = balanceStartDate.Value; date <= yesterday; date = date.AddDays(1))
+            {
+                if (!TimeTrackingConstants.IsWorkday(date)) continue;
+                minutesByDay.TryGetValue(date, out var workedMinutes);
+                totalBalanceMinutes += workedMinutes - TimeTrackingConstants.DailyTargetMinutes;
+            }
+        }
 
         return new BalanceDto(
             weekMinutes,
