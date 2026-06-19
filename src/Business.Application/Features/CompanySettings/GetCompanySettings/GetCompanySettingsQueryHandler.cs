@@ -11,6 +11,11 @@ public class GetCompanySettingsQueryHandler(IApplicationDbContext context)
     public async Task<CompanySettingsDto> Handle(GetCompanySettingsQuery request, CancellationToken cancellationToken)
     {
         var settings = await context.CompanySettings.FirstOrDefaultAsync(cancellationToken);
-        return new CompanySettingsDto(settings?.State ?? GermanState.Bayern);
+        return new CompanySettingsDto(
+            settings?.State ?? GermanState.Bayern,
+            settings?.Street ?? string.Empty,
+            settings?.HouseNumber ?? string.Empty,
+            settings?.Zip ?? string.Empty,
+            settings?.City ?? string.Empty);
     }
 }

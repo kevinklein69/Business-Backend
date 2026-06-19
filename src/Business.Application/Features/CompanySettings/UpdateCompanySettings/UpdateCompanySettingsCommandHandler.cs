@@ -17,8 +17,12 @@ public class UpdateCompanySettingsCommandHandler(IApplicationDbContext context)
         }
 
         settings.State = request.State;
+        settings.Street = request.Street;
+        settings.HouseNumber = request.HouseNumber;
+        settings.Zip = request.Zip;
+        settings.City = request.City;
         await context.SaveChangesAsync(cancellationToken);
 
-        return new CompanySettingsDto(settings.State);
+        return new CompanySettingsDto(settings.State, settings.Street, settings.HouseNumber, settings.Zip, settings.City);
     }
 }

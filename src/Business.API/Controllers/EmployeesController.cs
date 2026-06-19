@@ -1,9 +1,11 @@
 using Business.Application.Common.Exceptions;
+using Business.Application.Common.Interfaces;
 using Business.Application.Features.Employees.CreateEmployee;
 using Business.Application.Features.Employees.DeleteEmployee;
 using Business.Application.Features.Employees.GetEmployeeById;
 using Business.Application.Features.Employees.GetEmployees;
 using Business.Application.Features.Employees.UpdateEmployee;
+using Business.Application.Features.Employees.UpdateEmployeeRole;
 using Business.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +16,7 @@ namespace Business.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/employees")]
-public class EmployeesController(ISender sender) : ControllerBase
+public class EmployeesController(ISender sender, ICurrentUserService currentUser) : ControllerBase
 {
     public record CreateEmployeeRequest(
         string FirstName,
@@ -32,6 +34,8 @@ public class EmployeesController(ISender sender) : ControllerBase
         int? ProbationMonths,
         DateOnly? ProbationEndDate,
         int? VacationDaysEntitlement);
+
+    public record UpdateEmployeeRoleRequest(Role Role);
 
     public record UpdateEmployeeRequest(
         string FirstName,
@@ -54,6 +58,17 @@ public class EmployeesController(ISender sender) : ControllerBase
     public async Task<ActionResult<List<EmployeeDto>>> GetAll(CancellationToken cancellationToken)
     {
         var result = await sender.Send(new GetEmployeesQuery(), cancellationToken);
+        return Ok(result);
+    }
+
+    /// The current user's own profile — visible to every authenticated user, unlike GetById below.
+    [HttpGet("me")]
+    public async Task<ActionResult<EmployeeDetailDto>> GetMe(CancellationToken cancellationToken)
+    {
+        var userId = currentUser.UserId
+            ?? throw new UnauthorizedAccessException("No authenticated user.");
+
+        var result = await sender.Send(new GetEmployeeByIdQuery(userId), cancellationToken);
         return Ok(result);
     }
 
@@ -99,6 +114,21 @@ public class EmployeesController(ISender sender) : ControllerBase
                     request.EntryDate, request.ProbationMonths, request.ProbationEndDate, request.VacationDaysEntitlement),
                 cancellationToken);
 
+            return Ok(result);
+        }
+        catch (NotFoundException)
+        {
+            return NotFound();
+        }
+    }
+
+    [HttpPatch("{id:guid}/role")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<EmployeeDto>> UpdateRole(Guid id, UpdateEmployeeRoleRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var result = await sender.Send(new UpdateEmployeeRoleCommand(id, request.Role), cancellationToken);
             return Ok(result);
         }
         catch (NotFoundException)

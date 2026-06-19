@@ -13,7 +13,7 @@ namespace Business.API.Controllers;
 [Route("api/company-settings")]
 public class CompanySettingsController(ISender sender) : ControllerBase
 {
-    public record UpdateCompanySettingsBody(GermanState State);
+    public record UpdateCompanySettingsBody(GermanState State, string Street, string HouseNumber, string Zip, string City);
 
     /// Visible to every authenticated user — employees should be able to see which
     /// Bundesland (and therefore which public holidays) applies to the company.
@@ -28,7 +28,9 @@ public class CompanySettingsController(ISender sender) : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CompanySettingsDto>> Update(UpdateCompanySettingsBody request, CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new UpdateCompanySettingsCommand(request.State), cancellationToken);
+        var result = await sender.Send(
+            new UpdateCompanySettingsCommand(request.State, request.Street, request.HouseNumber, request.Zip, request.City),
+            cancellationToken);
         return Ok(result);
     }
 }
