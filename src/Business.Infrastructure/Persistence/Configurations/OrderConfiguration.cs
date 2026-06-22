@@ -10,6 +10,9 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
     {
         builder.HasKey(o => o.Id);
 
+        builder.Property(o => o.CompanyId).IsRequired();
+        builder.HasIndex(o => o.CompanyId);
+
         builder.Property(o => o.Title).IsRequired().HasMaxLength(200);
         builder.Property(o => o.Description).HasMaxLength(2000);
         builder.Property(o => o.Customer).HasMaxLength(200);

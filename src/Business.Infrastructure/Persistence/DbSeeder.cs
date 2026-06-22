@@ -18,24 +18,50 @@ public static class DbSeeder
 
     public static async Task SeedAsync(BusinessDbContext context, IPasswordHasher passwordHasher, ILogger logger)
     {
-        if (await context.Users.AnyAsync())
+        // The seeder runs outside an HTTP request, so there is no current tenant and the
+        // company query filter would hide existing rows. Bypass it for the empty-check and
+        // stamp every seeded row with the demo company explicitly.
+        if (await context.Users.IgnoreQueryFilters().AnyAsync())
         {
             return;
         }
 
         logger.LogInformation("Seeding demo data (all demo accounts use password '{Password}')...", DemoPassword);
 
+        var company = new Company
+        {
+            Id = Guid.NewGuid(),
+            Name = "Demo GmbH",
+            CreatedAt = DateTime.UtcNow,
+        };
+        context.Companies.Add(company);
+
         var users = CreateUsers(passwordHasher);
+        foreach (var u in users) u.CompanyId = company.Id;
         context.Users.AddRange(users);
 
         var byName = users.ToDictionary(u => $"{u.FirstName} {u.LastName}");
 
-        context.Orders.AddRange(CreateOrders(byName));
-        context.TimeEntries.AddRange(CreateTimeEntries(byName["Max Müller"]));
-        context.AbsenceRequests.AddRange(CreateAbsenceRequests(byName["Max Müller"]));
-        context.AbsenceRequests.AddRange(CreateSickAbsenceRequests(byName["Tom Wagner"], byName["Lisa Bauer"]));
+        var orders = CreateOrders(byName);
+        foreach (var o in orders) o.CompanyId = company.Id;
+        context.Orders.AddRange(orders);
 
-        context.CompanySettings.Add(new CompanySettings { Id = Guid.NewGuid(), State = GermanState.Bayern });
+        var timeEntries = CreateTimeEntries(byName["Max Müller"]);
+        foreach (var t in timeEntries) t.CompanyId = company.Id;
+        context.TimeEntries.AddRange(timeEntries);
+
+        var absences = CreateAbsenceRequests(byName["Max Müller"])
+            .Concat(CreateSickAbsenceRequests(byName["Tom Wagner"], byName["Lisa Bauer"]))
+            .ToList();
+        foreach (var a in absences) a.CompanyId = company.Id;
+        context.AbsenceRequests.AddRange(absences);
+
+        context.CompanySettings.Add(new CompanySettings
+        {
+            Id = Guid.NewGuid(),
+            CompanyId = company.Id,
+            State = GermanState.Bayern,
+        });
 
         await context.SaveChangesAsync();
     }

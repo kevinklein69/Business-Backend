@@ -28,6 +28,7 @@ public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGenerato
             new Claim(ClaimTypes.Email, user.Email),
             new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
             new Claim(ClaimTypes.Role, user.Role.ToString()),
+            new Claim("company_id", user.CompanyId.ToString()),
         };
 
         var token = new JwtSecurityToken(

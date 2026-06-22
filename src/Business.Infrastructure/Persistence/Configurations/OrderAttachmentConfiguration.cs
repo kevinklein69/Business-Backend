@@ -10,6 +10,9 @@ public class OrderAttachmentConfiguration : IEntityTypeConfiguration<OrderAttach
     {
         builder.HasKey(a => a.Id);
 
+        builder.Property(a => a.CompanyId).IsRequired();
+        builder.HasIndex(a => a.CompanyId);
+
         builder.Property(a => a.FileName).IsRequired().HasMaxLength(255);
         builder.Property(a => a.ContentType).IsRequired().HasMaxLength(100);
         builder.Property(a => a.StoragePath).IsRequired().HasMaxLength(500);

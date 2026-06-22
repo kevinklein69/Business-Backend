@@ -10,6 +10,10 @@ public class CompanySettingsConfiguration : IEntityTypeConfiguration<CompanySett
     {
         builder.HasKey(s => s.Id);
 
+        builder.Property(s => s.CompanyId).IsRequired();
+        // One settings row per company.
+        builder.HasIndex(s => s.CompanyId).IsUnique();
+
         builder.Property(s => s.State).HasConversion<string>().HasMaxLength(30);
     }
 }

@@ -38,6 +38,25 @@ Clean Architecture Backend für die Business-App, gebaut mit ASP.NET Core 8 und 
 
 Die API-Dokumentation ist unter [http://localhost:5228/swagger](http://localhost:5228/swagger) erreichbar.
 
+## Mandantenfähigkeit (Multi-Tenancy) & Onboarding neuer Firmen
+
+Die App ist mandantenfähig: jede Kundenfirma ist ein eigener **Tenant** (`Company`), alle Daten sind über `CompanyId` strikt getrennt (EF-Core Global Query Filter im `BusinessDbContext`). Eine Firma sieht ausschließlich ihre eigenen Mitarbeiter, Aufträge, Zeiten usw.
+
+**Es gibt bewusst keine öffentliche Selbst-Registrierung** — neue Firmen werden manuell angelegt (z. B. erst nach Zahlungseingang). Dafür gibt es ein CLI-Kommando, das die Firma samt erstem Admin-Benutzer erstellt:
+
+```bash
+dotnet run --project src/Business.API -- onboard-company \
+    --company "Mustermann Bau GmbH" \
+    --first Erik --last Mustermann \
+    --email erik@mustermann.de \
+    --password "EinSicheresPasswort"
+```
+
+- Legt `Company` + ersten `Admin`-User + Standard-`CompanySettings` an.
+- Die E-Mail muss systemweit eindeutig sein — sonst Abbruch mit `Diese E-Mail ist bereits vergeben.`
+- Der Admin loggt sich danach normal über `/api/auth/login` ein und kann weitere Mitarbeiter anlegen.
+- Voraussetzung: Datenbank läuft und ist migriert (siehe Setup). Das Kommando startet **keinen** Webserver, es läuft einmalig durch und beendet sich.
+
 ## Datei-Uploads (Auftrags-Anhänge)
 
 Hochgeladene Dateien (Bilder, PDFs etc. an Aufträgen) werden im Dateisystem gespeichert, die Metadaten in der Tabelle `OrderAttachments`. Der Speicherort ist in `appsettings.json` konfigurierbar:

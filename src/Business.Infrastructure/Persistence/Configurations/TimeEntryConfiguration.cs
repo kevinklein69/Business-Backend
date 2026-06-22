@@ -11,6 +11,9 @@ public class TimeEntryConfiguration : IEntityTypeConfiguration<TimeEntry>
     {
         builder.HasKey(t => t.Id);
 
+        builder.Property(t => t.CompanyId).IsRequired();
+        builder.HasIndex(t => t.CompanyId);
+
         builder.Property(t => t.ClockIn).IsRequired();
 
         builder.Property(t => t.Status)

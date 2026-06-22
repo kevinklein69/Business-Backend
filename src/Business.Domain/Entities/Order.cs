@@ -1,10 +1,12 @@
+using Business.Domain.Common;
 using Business.Domain.Enums;
 
 namespace Business.Domain.Entities;
 
-public class Order
+public class Order : ITenantScoped
 {
     public Guid Id { get; set; }
+    public Guid CompanyId { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }
     public string? Customer { get; set; }

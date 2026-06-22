@@ -56,6 +56,13 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
+// CLI mode: provision a new tenant from the command line instead of serving HTTP.
+//   dotnet run --project src/Business.API -- onboard-company --company "..." --first ... --last ... --email ... --password ...
+if (args.Length > 0 && args[0] == Business.API.OnboardCompanyCli.CommandName)
+{
+    return await Business.API.OnboardCompanyCli.RunAsync(app.Services, args);
+}
+
 if (app.Environment.IsDevelopment())
 {
     using var scope = app.Services.CreateScope();
@@ -82,3 +89,5 @@ app.MapControllers();
 app.MapGet("/health", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
+
+return 0;

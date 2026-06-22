@@ -5,6 +5,7 @@ namespace Business.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {
+    DbSet<Company> Companies { get; }
     DbSet<User> Users { get; }
     DbSet<Order> Orders { get; }
     DbSet<PlanningPeriod> PlanningPeriods { get; }

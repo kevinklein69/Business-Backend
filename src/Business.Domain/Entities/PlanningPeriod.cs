@@ -1,10 +1,12 @@
+using Business.Domain.Common;
 using Business.Domain.Enums;
 
 namespace Business.Domain.Entities;
 
-public class PlanningPeriod
+public class PlanningPeriod : ITenantScoped
 {
     public Guid Id { get; set; }
+    public Guid CompanyId { get; set; }
     public string Name { get; set; } = string.Empty;
     public DateOnly? StartDate { get; set; }
     public DateOnly? EndDate { get; set; }

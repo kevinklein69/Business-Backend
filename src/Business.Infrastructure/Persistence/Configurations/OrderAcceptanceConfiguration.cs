@@ -10,6 +10,9 @@ public class OrderAcceptanceConfiguration : IEntityTypeConfiguration<OrderAccept
     {
         builder.HasKey(a => a.Id);
 
+        builder.Property(a => a.CompanyId).IsRequired();
+        builder.HasIndex(a => a.CompanyId);
+
         builder.HasIndex(a => a.OrderId).IsUnique();
 
         builder.Property(a => a.SignerName).IsRequired().HasMaxLength(200);

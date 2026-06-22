@@ -1,8 +1,10 @@
 using Business.Application.Common;
+using Business.Application.Common.Exceptions;
 using Business.Application.Common.Interfaces;
 using Business.Application.Features.Employees.GetEmployees;
 using Business.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business.Application.Features.Employees.CreateEmployee;
 
@@ -11,6 +13,16 @@ public class CreateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
 {
     public async Task<EmployeeDto> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
     {
+        // Email is unique across all tenants, so check globally (bypass the company filter)
+        // to give a clean 409 instead of a DB unique-constraint 500.
+        var emailTaken = await context.Users
+            .IgnoreQueryFilters()
+            .AnyAsync(u => u.Email == request.Email, cancellationToken);
+        if (emailTaken)
+        {
+            throw new ConflictException("Diese E-Mail ist bereits vergeben.");
+        }
+
         var user = new User
         {
             Id = Guid.NewGuid(),
