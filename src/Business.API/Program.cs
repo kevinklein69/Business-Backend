@@ -30,10 +30,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("Frontend", policy =>
     {
         policy.WithOrigins(
-                  "http://localhost:3000",      // Next.js dev server (web)
-                  "capacitor://localhost",      // Capacitor iOS webview
-                  "http://localhost",           // Capacitor Android webview
-                  // ponytail: temporary sslip.io test URL — replace with real https://app.<domain> once DNS is set.
+                  "http://localhost:3000",              // Next.js dev server (web)
+                  "capacitor://localhost",              // Capacitor iOS webview
+                  "http://localhost",                   // Capacitor Android webview
+                  "https://app.betriebstakt.site",      // production web frontend
+                  // ponytail: sslip.io test URL — remove once fully cut over to the domain.
                   "http://d5cpeqpy1qtixqa33fwu5zoz.167.233.221.251.sslip.io")
               .AllowAnyHeader()
               .AllowAnyMethod();
