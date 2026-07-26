@@ -66,17 +66,22 @@ if (args.Length > 0 && args[0] == Business.API.OnboardCompanyCli.CommandName)
     return await Business.API.OnboardCompanyCli.RunAsync(app.Services, args);
 }
 
-if (app.Environment.IsDevelopment())
+// Apply migrations on every startup (dev + prod), otherwise a fresh prod DB stays empty.
+// ponytail: fine for a single replica; multiple replicas would race on migrate — add a lock/job then.
+using (var scope = app.Services.CreateScope())
 {
-    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
 
     var dbContext = services.GetRequiredService<BusinessDbContext>();
     await dbContext.Database.MigrateAsync();
 
-    var passwordHasher = services.GetRequiredService<Business.Application.Common.Interfaces.IPasswordHasher>();
-    var seederLogger = services.GetRequiredService<ILogger<Program>>();
-    await DbSeeder.SeedAsync(dbContext, passwordHasher, seederLogger);
+    // Seed demo/test data only in Development — never in prod.
+    if (app.Environment.IsDevelopment())
+    {
+        var passwordHasher = services.GetRequiredService<Business.Application.Common.Interfaces.IPasswordHasher>();
+        var seederLogger = services.GetRequiredService<ILogger<Program>>();
+        await DbSeeder.SeedAsync(dbContext, passwordHasher, seederLogger);
+    }
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
