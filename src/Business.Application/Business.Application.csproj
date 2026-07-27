@@ -10,6 +10,8 @@
     <!-- Pinned to the last free (Apache-2.0) release; 13.x+ requires a commercial license. -->
     <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.*" />
+    <!-- Relational APIs (ExecuteDelete, transactions) used by cross-tenant bulk operations. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.*" />
   </ItemGroup>
 
   <PropertyGroup>
