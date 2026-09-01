@@ -35,6 +35,16 @@ public class UpdateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
         user.VacationDaysEntitlement = request.VacationDaysEntitlement;
         user.InitialBalanceMinutes = request.InitialBalanceMinutes;
 
+        // Only re-stamp the year when the value actually changes. Otherwise saving the
+        // edit form in a later year (without touching this field) would silently bump
+        // InitialVacationYear to the new year and reactivate an offset that was only
+        // ever meant to apply once, during onboarding.
+        if (request.InitialVacationDaysTaken != user.InitialVacationDaysTaken)
+        {
+            user.InitialVacationYear = request.InitialVacationDaysTaken.HasValue ? DateTime.UtcNow.Year : null;
+        }
+        user.InitialVacationDaysTaken = request.InitialVacationDaysTaken;
+
         if (!string.IsNullOrWhiteSpace(request.Password))
         {
             user.PasswordHash = passwordHasher.Hash(user, request.Password);
@@ -59,6 +69,8 @@ public class UpdateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
             user.ProbationMonths,
             user.ProbationEndDate,
             user.VacationDaysEntitlement,
-            user.InitialBalanceMinutes);
+            user.InitialBalanceMinutes,
+            user.InitialVacationDaysTaken,
+            user.InitialVacationYear);
     }
 }

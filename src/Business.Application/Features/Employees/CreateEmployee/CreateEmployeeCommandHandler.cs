@@ -41,6 +41,8 @@ public class CreateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
             ProbationEndDate = request.ProbationEndDate ?? ProbationCalculator.CalculateEnd(request.EntryDate, request.ProbationMonths),
             VacationDaysEntitlement = request.VacationDaysEntitlement,
             InitialBalanceMinutes = request.InitialBalanceMinutes,
+            InitialVacationDaysTaken = request.InitialVacationDaysTaken,
+            InitialVacationYear = request.InitialVacationDaysTaken.HasValue ? DateTime.UtcNow.Year : null,
         };
         user.PasswordHash = passwordHasher.Hash(user, request.Password);
 
@@ -51,6 +53,6 @@ public class CreateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
             user.Id, user.FirstName, user.LastName, user.Email, user.Role, user.Department, false,
             user.Street, user.HouseNumber, user.Zip, user.City, user.Phone,
             user.EntryDate, user.ProbationMonths, user.ProbationEndDate, user.VacationDaysEntitlement,
-            user.InitialBalanceMinutes);
+            user.InitialBalanceMinutes, user.InitialVacationDaysTaken, user.InitialVacationYear);
     }
 }

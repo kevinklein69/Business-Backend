@@ -30,7 +30,9 @@ public class GetEmployeesQueryHandler(IApplicationDbContext context)
                 u.ProbationMonths,
                 u.ProbationEndDate,
                 u.VacationDaysEntitlement,
-                u.InitialBalanceMinutes))
+                u.InitialBalanceMinutes,
+                u.InitialVacationDaysTaken,
+                u.InitialVacationYear))
             .ToListAsync(cancellationToken);
     }
 }

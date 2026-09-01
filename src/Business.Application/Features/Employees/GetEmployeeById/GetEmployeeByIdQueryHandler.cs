@@ -36,7 +36,9 @@ public class GetEmployeeByIdQueryHandler(IApplicationDbContext context)
             user.ProbationMonths,
             user.ProbationEndDate,
             user.VacationDaysEntitlement,
-            user.InitialBalanceMinutes);
+            user.InitialBalanceMinutes,
+            user.InitialVacationDaysTaken,
+            user.InitialVacationYear);
 
         var state = await context.GetCompanyStateAsync(cancellationToken);
         var currentYear = DateTime.UtcNow.Year;
@@ -53,7 +55,14 @@ public class GetEmployeeByIdQueryHandler(IApplicationDbContext context)
             .Where(a => a.Type == AbsenceType.Sick)
             .Sum(a => AbsenceRequestExtensions.CountBusinessDays(a.StartDate, a.EndDate, state));
 
-        var remainingVacationDays = (employee.VacationDaysEntitlement ?? 0) - vacationTaken;
+        // Vacation days already taken before this software's rollout only count against
+        // the entitlement for the year they were recorded for — otherwise they'd wrongly
+        // keep reducing every future year's balance too.
+        var initialVacationTaken = user.InitialVacationYear == currentYear
+            ? user.InitialVacationDaysTaken ?? 0
+            : 0;
+
+        var remainingVacationDays = (employee.VacationDaysEntitlement ?? 0) - vacationTaken - initialVacationTaken;
 
         return employee.ToDetailDto(remainingVacationDays, sickDays);
     }

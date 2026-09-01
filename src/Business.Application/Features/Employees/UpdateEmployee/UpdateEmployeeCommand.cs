@@ -21,4 +21,5 @@ public record UpdateEmployeeCommand(
     int? ProbationMonths,
     DateOnly? ProbationEndDate,
     int? VacationDaysEntitlement,
-    int? InitialBalanceMinutes) : IRequest<EmployeeDto>;
+    int? InitialBalanceMinutes,
+    decimal? InitialVacationDaysTaken) : IRequest<EmployeeDto>;

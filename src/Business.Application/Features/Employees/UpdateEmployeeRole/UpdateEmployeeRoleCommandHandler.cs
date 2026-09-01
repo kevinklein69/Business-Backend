@@ -39,6 +39,8 @@ public class UpdateEmployeeRoleCommandHandler(IApplicationDbContext context)
             user.ProbationMonths,
             user.ProbationEndDate,
             user.VacationDaysEntitlement,
-            user.InitialBalanceMinutes);
+            user.InitialBalanceMinutes,
+            user.InitialVacationDaysTaken,
+            user.InitialVacationYear);
     }
 }

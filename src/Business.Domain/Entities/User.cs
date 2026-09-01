@@ -30,6 +30,14 @@ public class User : ITenantScoped
     /// used to back-calculate a deficit, since it may predate the software's rollout.
     public int? InitialBalanceMinutes { get; set; }
 
+    /// Vacation days already taken this calendar year in a previous system, before the
+    /// employee was onboarded into this software (so they're not reflected in any
+    /// AbsenceRequest here). Paired with InitialVacationYear so it only offsets
+    /// RemainingVacationDays for the year it was recorded, and stops applying once a
+    /// new year's entitlement starts.
+    public decimal? InitialVacationDaysTaken { get; set; }
+    public int? InitialVacationYear { get; set; }
+
     public ICollection<Order> AssignedOrders { get; set; } = new List<Order>();
     public ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
     public ICollection<AbsenceRequest> AbsenceRequests { get; set; } = new List<AbsenceRequest>();

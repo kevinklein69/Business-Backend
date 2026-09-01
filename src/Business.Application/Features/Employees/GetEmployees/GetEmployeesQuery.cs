@@ -22,4 +22,6 @@ public record EmployeeDto(
     int? ProbationMonths,
     DateOnly? ProbationEndDate,
     int? VacationDaysEntitlement,
-    int? InitialBalanceMinutes);
+    int? InitialBalanceMinutes,
+    decimal? InitialVacationDaysTaken,
+    int? InitialVacationYear);
