@@ -33,7 +33,8 @@ public class EmployeesController(ISender sender, ICurrentUserService currentUser
         DateOnly EntryDate,
         int? ProbationMonths,
         DateOnly? ProbationEndDate,
-        int? VacationDaysEntitlement);
+        int? VacationDaysEntitlement,
+        int? InitialBalanceMinutes);
 
     public record UpdateEmployeeRoleRequest(Role Role);
 
@@ -52,7 +53,8 @@ public class EmployeesController(ISender sender, ICurrentUserService currentUser
         DateOnly EntryDate,
         int? ProbationMonths,
         DateOnly? ProbationEndDate,
-        int? VacationDaysEntitlement);
+        int? VacationDaysEntitlement,
+        int? InitialBalanceMinutes);
 
     [HttpGet]
     public async Task<ActionResult<List<EmployeeDto>>> GetAll(CancellationToken cancellationToken)
@@ -95,7 +97,8 @@ public class EmployeesController(ISender sender, ICurrentUserService currentUser
             new CreateEmployeeCommand(
                 request.FirstName, request.LastName, request.Email, request.Password, request.Role, request.Department,
                 request.Street, request.HouseNumber, request.Zip, request.City, request.Phone,
-                request.EntryDate, request.ProbationMonths, request.ProbationEndDate, request.VacationDaysEntitlement),
+                request.EntryDate, request.ProbationMonths, request.ProbationEndDate, request.VacationDaysEntitlement,
+                request.InitialBalanceMinutes),
             cancellationToken);
 
         return CreatedAtAction(nameof(GetAll), new { id = result.Id }, result);
@@ -111,7 +114,8 @@ public class EmployeesController(ISender sender, ICurrentUserService currentUser
                 new UpdateEmployeeCommand(
                     id, request.FirstName, request.LastName, request.Email, request.Role, request.Department, request.Password,
                     request.Street, request.HouseNumber, request.Zip, request.City, request.Phone,
-                    request.EntryDate, request.ProbationMonths, request.ProbationEndDate, request.VacationDaysEntitlement),
+                    request.EntryDate, request.ProbationMonths, request.ProbationEndDate, request.VacationDaysEntitlement,
+                    request.InitialBalanceMinutes),
                 cancellationToken);
 
             return Ok(result);

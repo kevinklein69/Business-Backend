@@ -35,7 +35,8 @@ public class GetEmployeeByIdQueryHandler(IApplicationDbContext context)
             user.EntryDate,
             user.ProbationMonths,
             user.ProbationEndDate,
-            user.VacationDaysEntitlement);
+            user.VacationDaysEntitlement,
+            user.InitialBalanceMinutes);
 
         var state = await context.GetCompanyStateAsync(cancellationToken);
         var currentYear = DateTime.UtcNow.Year;

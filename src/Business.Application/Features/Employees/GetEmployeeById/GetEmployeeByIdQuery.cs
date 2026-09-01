@@ -23,6 +23,7 @@ public record EmployeeDetailDto(
     int? ProbationMonths,
     DateOnly? ProbationEndDate,
     int? VacationDaysEntitlement,
+    int? InitialBalanceMinutes,
     decimal RemainingVacationDays,
     decimal SickDaysThisYear);
 
@@ -46,6 +47,7 @@ public static class EmployeeDetailDtoExtensions
             employee.ProbationMonths,
             employee.ProbationEndDate,
             employee.VacationDaysEntitlement,
+            employee.InitialBalanceMinutes,
             remainingVacationDays,
             sickDaysThisYear);
 }

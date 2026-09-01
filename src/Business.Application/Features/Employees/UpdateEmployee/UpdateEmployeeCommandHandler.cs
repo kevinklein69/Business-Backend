@@ -33,6 +33,7 @@ public class UpdateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
         user.ProbationMonths = request.ProbationMonths;
         user.ProbationEndDate = request.ProbationEndDate ?? ProbationCalculator.CalculateEnd(request.EntryDate, request.ProbationMonths);
         user.VacationDaysEntitlement = request.VacationDaysEntitlement;
+        user.InitialBalanceMinutes = request.InitialBalanceMinutes;
 
         if (!string.IsNullOrWhiteSpace(request.Password))
         {
@@ -57,6 +58,7 @@ public class UpdateEmployeeCommandHandler(IApplicationDbContext context, IPasswo
             user.EntryDate,
             user.ProbationMonths,
             user.ProbationEndDate,
-            user.VacationDaysEntitlement);
+            user.VacationDaysEntitlement,
+            user.InitialBalanceMinutes);
     }
 }

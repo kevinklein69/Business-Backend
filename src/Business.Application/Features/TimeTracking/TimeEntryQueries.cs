@@ -92,16 +92,17 @@ public static class TimeEntryQueries
             .Count(TimeTrackingConstants.IsWorkday);
         var monthTargetMinutes = monthWorkdays * TimeTrackingConstants.DailyTargetMinutes;
 
-        // Determine the start date for the total balance: use EntryDate if set, otherwise
-        // fall back to the earliest day with an actual entry.
+        // Determine the start date for the total balance: the earliest day with an actual
+        // entry. EntryDate is intentionally NOT used here — it may predate the software's
+        // rollout at this customer, which would back-calculate a deficit for days the
+        // employee was never expected to clock in with this system.
         var user = await context.Users.FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
-        DateOnly? balanceStartDate = user?.EntryDate
-            ?? (minutesByDay.Count > 0 ? minutesByDay.Keys.Min() : null);
+        DateOnly? balanceStartDate = minutesByDay.Count > 0 ? minutesByDay.Keys.Min() : null;
 
         // Enumerate every workday from start up to yesterday (today is still in progress).
         // Days with no clock-ins and no approved absences count as -480 min (full missed day).
         var yesterday = today.AddDays(-1);
-        var totalBalanceMinutes = 0;
+        var totalBalanceMinutes = user?.InitialBalanceMinutes ?? 0;
         if (balanceStartDate.HasValue)
         {
             for (var date = balanceStartDate.Value; date <= yesterday; date = date.AddDays(1))

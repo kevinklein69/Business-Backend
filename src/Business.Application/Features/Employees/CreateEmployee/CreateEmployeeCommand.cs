@@ -19,4 +19,5 @@ public record CreateEmployeeCommand(
     DateOnly EntryDate,
     int? ProbationMonths,
     DateOnly? ProbationEndDate,
-    int? VacationDaysEntitlement) : IRequest<EmployeeDto>;
+    int? VacationDaysEntitlement,
+    int? InitialBalanceMinutes) : IRequest<EmployeeDto>;
